@@ -1,0 +1,655 @@
+% Documento de Especificação Técnica e Arquitetura de Software
+% SISTEMA DE GESTÃO DE PROJETOS, PUBLICAÇÕES E FINANCIAMENTOS (SGPPF)
+% Versão 1.0 — Centro Universitário do Instituto Mauá de Tecnologia (CEUN-IMT)
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[brazilian]{babel}
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{longtable}
+\usepackage{lmodern}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric}
+\usepackage{pdflscape}
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\geometry{margin=2.5cm}
+
+\title{SISTEMA DE GESTÃO DE PROJETOS, PUBLICAÇÕES E FINANCIAMENTOS (SGPPF)\\
+\large Documento de Especificação Técnica e Arquitetura de Software}
+\author{Centro Universitário do Instituto Mauá de Tecnologia (CEUN-IMT)}
+\date{Versão 1.0\\\today}
+
+\begin{document}
+% Cabeçalho e rodapé
+\setlength{\headheight}{30pt}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\includegraphics[height=18pt]{assets/maua_azul.png}}
+\fancyhead[C]{\textbf{SISTEMA DE GESTÃO DE PROJETOS, PUBLICAÇÕES E FINANCIAMENTOS (SGPPF) \\}}
+\fancyhead[R]{\small Versão 1.0 --- \today}
+\renewcommand{\headrulewidth}{3pt}
+\fancyfoot[C]{\thepage}
+
+\maketitle
+\tableofcontents
+\vspace{1cm}
+
+\section{Introdução}
+\subsection{Contexto}
+O crescimento das atividades de pesquisa, inovação e desenvolvimento tecnológico no CEUN-IMT demanda uma plataforma centralizada capaz de organizar informações relacionadas a projetos, publicações científicas, orientações acadêmicas, financiamentos, bolsas e indicadores institucionais.
+
+Atualmente, grande parte dessas informações encontra-se distribuída entre planilhas, documentos institucionais, currículos Lattes, plataformas de fomento e sistemas independentes, dificultando a consolidação de dados e a geração de relatórios estratégicos.
+
+O Sistema de Gestão de Projetos, Publicações e Financiamentos (SGPPF) tem como objetivo centralizar essas informações em uma única plataforma web, inspirada nos conceitos utilizados pelo sistema SAGE da FAPESP, porém adaptada às necessidades institucionais do CEUN-IMT.
+
+\section{Objetivos}
+\subsection{Objetivo Geral}
+Desenvolver uma plataforma web integrada para gerenciamento de projetos de pesquisa, produção científica e financiamentos institucionais, atuando também como uma plataforma de aquisição de dados institucionais. O objetivo é consolidar uma fonte única, confiável e histórica de dados para extração de informações estratégicas e apoio à tomada de decisões acadêmicas, administrativas e de investimento em pesquisa.
+
+\subsection{Objetivos Específicos}
+\textbf{Centralizar informações dos pesquisadores:} reunir em um único ambiente os dados pessoais, acadêmicos e de produtividade, reduzindo dispersão de informação e retrabalho operacional.
+
+\textbf{Gerenciar projetos de pesquisa e inovação:} permitir cadastro, acompanhamento de status, marcos e equipes, garantindo visibilidade do ciclo de vida completo de cada projeto.
+
+\textbf{Consolidar publicações científicas:} manter base atualizada e padronizada da produção intelectual institucional, facilitando análises de desempenho por período, área e pesquisador.
+
+\textbf{Controlar financiamentos e bolsas:} registrar valores aprovados, executados e saldos, promovendo maior transparência financeira e melhor planejamento de recursos.
+
+\textbf{Registrar orientações acadêmicas:} documentar orientações em diferentes modalidades para acompanhar formação de alunos e contribuição acadêmica dos orientadores.
+
+\textbf{Gerar indicadores institucionais:} transformar dados operacionais em indicadores estratégicos de pesquisa, inovação e impacto científico para apoio à gestão.
+
+\textbf{Automatizar a produção de relatórios:} reduzir esforço manual na consolidação de informações e padronizar a emissão de relatórios técnicos e gerenciais.
+
+\textbf{Facilitar auditorias e prestações de contas:} assegurar rastreabilidade das informações e histórico de alterações, atendendo exigências internas e de agências de fomento.
+
+\textbf{Integrar sistemas externos de pesquisa:} sincronizar dados com plataformas acadêmicas e de fomento para ampliar consistência, atualização e cobertura das informações institucionais.
+
+\section{Escopo do Sistema}
+O escopo do SGPPF contempla o cadastro e a gestão integrada de pesquisadores, grupos, projetos, publicações, orientações e dados financeiros institucionais.
+
+\subsection{Acesso e Cadastro de Pesquisadores}
+O cadastro de pesquisadores deverá ocorrer por autenticação institucional via Outlook/Azure AD, considerando exclusivamente e-mails do domínio Mauá. A conta autenticada será associada ao perfil do usuário no sistema, evitando cadastro manual de credenciais.
+
+\subsection{Cadastro de Grupos e Vínculo Institucional}
+Os grupos de pesquisa já deverão estar previamente cadastrados no banco de dados. Cada pesquisador deverá estar vinculado a pelo menos um grupo de pesquisa, garantindo organização institucional e rastreabilidade das atividades por área e coordenação.
+
+\subsection{Cadastro Operacional por Pesquisadores}
+Pesquisadores autenticados poderão realizar diretamente:
+\begin{itemize}[leftmargin=*]
+  \item cadastro e atualização de projetos de pesquisa e inovação;
+  \item cadastro de publicações científicas;
+  \item registro e acompanhamento de orientações acadêmicas.
+\end{itemize}
+
+\subsection{Gestão Financeira Setorial e Geral}
+O sistema deverá suportar a gestão financeira por setor e também a visão financeira consolidada de toda a Mauá. Isso inclui acompanhamento de valores aprovados, executados e saldos, possibilitando análise comparativa entre setores e visão institucional integrada para tomada de decisão.
+
+\subsection{Componentes Funcionais do Escopo}
+\begin{itemize}[leftmargin=*]
+  \item Cadastro de pesquisadores (via autenticação institucional).
+  \item Cadastro e manutenção de grupos de pesquisa.
+  \item Cadastro e acompanhamento de projetos.
+  \item Controle de publicações.
+  \item Controle de orientações.
+  \item Gestão financeira setorial e institucional.
+  \item Controle de financiamentos.
+  \item Dashboard institucional.
+  \item Relatórios gerenciais.
+  \item Integração com sistemas externos.
+\end{itemize}
+
+\section{Perfis de Usuários}
+\subsection{Administrador}
+O Administrador é o perfil com maior nível de responsabilidade no SGPPF. Seu papel é garantir a operação contínua da plataforma, a governança de acesso e a consistência das configurações institucionais. Além de manter a integridade dos dados e das permissões, esse perfil também atua na administração das integrações e no suporte às áreas gestoras para uso estratégico das informações.
+
+Principais permissões e responsabilidades:
+\begin{itemize}[leftmargin=*]
+  \item Gerenciar usuários.
+  \item Criar grupos.
+  \item Alterar permissões.
+  \item Gerenciar integrações.
+  \item Emitir relatórios globais.
+\end{itemize}
+
+\subsection{Coordenador de Setor}
+O Coordenador de Setor é responsável pelo acompanhamento das atividades de pesquisa, inovação e produção acadêmica no contexto do seu setor. Esse perfil possui visão gerencial das equipes sob sua área de atuação, com foco em monitoramento de desempenho, organização de dados e apoio à tomada de decisão local, sem a atribuição de aprovação formal de projetos.
+
+Principais permissões e responsabilidades:
+\begin{itemize}[leftmargin=*]
+  \item Gerenciar pesquisadores sob sua responsabilidade.
+  \item Acompanhar projetos e indicadores do setor.
+  \item Visualizar indicadores institucionais.
+\end{itemize}
+
+\subsection{Pesquisador}
+O Pesquisador é o principal responsável pela atualização das informações acadêmicas e científicas relacionadas à sua atuação. Esse perfil alimenta o sistema com dados de projetos, publicações e orientações, contribuindo diretamente para a qualidade da base institucional e para a geração de indicadores confiáveis.
+
+Principais permissões e responsabilidades:
+\begin{itemize}[leftmargin=*]
+  \item Atualizar informações pessoais.
+  \item Registrar publicações.
+  \item Registrar orientações.
+  \item Gerenciar seus projetos.
+\end{itemize}
+
+\subsection{Consultor}
+O perfil Consultor é destinado a usuários que necessitam acesso informacional, porém sem capacidade de alteração de dados. Sua função é apoiar análises, auditorias, avaliações e acompanhamento institucional com base em informações já consolidadas no sistema.
+
+Principais permissões e responsabilidades:
+\begin{itemize}[leftmargin=*]
+  \item Apenas visualização dos dados autorizados.
+\end{itemize}
+
+\section{Arquitetura Geral}
+O SGPPF adota arquitetura multicamadas para garantir separação de responsabilidades, escalabilidade e facilidade de manutenção. Essa abordagem permite evoluir frontend, backend, banco de dados e integrações externas de forma controlada, reduzindo acoplamento técnico e risco de regressão entre módulos.
+
+No contexto institucional da Mauá, a arquitetura foi definida para sustentar três objetivos simultâneos: operação diária dos pesquisadores, governança de dados para os coordenadores e visão consolidada para gestão estratégica. Dessa forma, o sistema combina fluxo transacional (cadastros e atualizações) com fluxo analítico (indicadores e relatórios) em uma base integrada.
+
+\subsection{Princípios Arquiteturais}
+\begin{itemize}[leftmargin=*]
+  \item Separação de responsabilidades por camada funcional.
+  \item Serviços orientados a domínio para regras de negócio.
+  \item Integrações externas desacopladas por conectores.
+  \item Rastreabilidade ponta a ponta (usuário, operação, dado e auditoria).
+  \item Escalabilidade horizontal do backend e dos serviços de processamento.
+\end{itemize}
+
+\subsection{Camada de Apresentação}
+A camada de apresentação é composta pelo frontend web institucional, responsável pela experiência do usuário e pela orquestração das interações com os serviços da aplicação. Nessa camada, são implementados os fluxos de navegação, validação inicial de formulários e visualização de indicadores.
+
+Responsável por:
+\begin{itemize}[leftmargin=*]
+  \item Interface gráfica.
+  \item Navegação.
+  \item Dashboards.
+  \item Relatórios.
+\end{itemize}
+
+\subsection{Camada de Aplicação}
+A camada de aplicação concentra o backend e o núcleo das regras de negócio. Ela recebe solicitações do frontend, aplica políticas de autenticação e autorização, executa regras funcionais por módulo e coordena o acesso à persistência e aos serviços externos.
+
+Backend responsável por:
+\begin{itemize}[leftmargin=*]
+  \item Regras de negócio.
+  \item Autenticação.
+  \item Integrações externas.
+  \item Controle de permissões.
+\end{itemize}
+
+\subsection{Camada de Persistência}
+A camada de persistência utiliza banco de dados relacional para garantir consistência transacional e histórico auditável das informações acadêmicas e financeiras. Essa camada também suporta consultas consolidadas para relatórios operacionais e estratégicos.
+
+Banco de dados relacional. Responsável por:
+\begin{itemize}[leftmargin=*]
+  \item Armazenamento de dados.
+  \item Consultas.
+  \item Auditoria.
+\end{itemize}
+
+\subsection{Camada de Integração}
+Responsável por interoperabilidade com serviços institucionais e plataformas acadêmicas externas, permitindo autenticação federada, importação de metadados e sincronização periódica.
+
+Inclui comunicação com:
+\begin{itemize}[leftmargin=*]
+  \item Microsoft Azure AD
+  \item Outlook
+  \item ORCID
+  \item CrossRef
+  \item Google Scholar
+  \item Plataforma Lattes
+\end{itemize}
+
+\subsection{Diagrama de Arquitetura em Camadas}
+Esta visão consolida a separação de responsabilidades entre interface, serviços, persistência e integrações externas. O objetivo é reduzir acoplamento, facilitar manutenção e permitir evolução independente de cada camada.
+
+\begin{figure}[h!]
+\centering
+\begin{tikzpicture}[
+  node distance=7mm,
+  layer/.style={rectangle, rounded corners, minimum width=12cm, minimum height=1.1cm, align=center, draw=black, fill=gray!10},
+  arrow/.style={-{Latex[length=2mm]}, thick}
+]
+  \node[layer, fill=blue!8] (presentation) {Camada de Apresentação (React/TypeScript)\\Interface, navegação, dashboards e relatórios};
+  \node[layer, fill=green!10, below=of presentation] (application) {Camada de Aplicação (FastAPI)\\Regras de negócio, autenticação, autorização e serviços};
+  \node[layer, fill=yellow!18, below=of application] (persistence) {Camada de Persistência (PostgreSQL)\\Dados transacionais, histórico e auditoria};
+  \node[layer, fill=orange!18, below=of persistence] (integration) {Camada de Integração\\Azure AD, Outlook, ORCID, CrossRef, Scholar e Lattes};
+
+  \draw[arrow] (presentation) -- (application);
+  \draw[arrow] (application) -- (persistence);
+  \draw[arrow] (application.east) to[out=0,in=0,looseness=1.4] (integration.east);
+  \draw[arrow] (integration.west) to[out=180,in=180,looseness=1.4] (application.west);
+\end{tikzpicture}
+\caption{Visão arquitetural em camadas do SGPPF.}
+\end{figure}
+
+\subsection{Fluxograma Operacional da Arquitetura}
+O fluxograma operacional descreve a jornada principal desde o acesso autenticado até a atualização de indicadores e trilhas de auditoria. Ele também evidencia o desvio de exceção para perfis não autorizados.
+
+\begin{figure}[h!]
+\centering
+\begin{tikzpicture}[
+  node distance=7mm,
+  block/.style={rectangle, rounded corners, minimum width=4.1cm, minimum height=0.9cm, text width=4.1cm, align=center, draw=black, fill=gray!8},
+  decision/.style={diamond, aspect=2, minimum width=3.1cm, minimum height=0.9cm, text width=2.2cm, align=center, draw=black, fill=gray!8, inner sep=1pt},
+  arrow/.style={-{Latex[length=2mm]}, thick}
+]
+  \node[block] (start) {Usuário acessa o portal SGPPF};
+  \node[block, below=of start] (login) {Autenticação via Azure AD/Outlook};
+  \node[decision, below=of login, yshift=-1mm] (perfil) {Perfil válido?};
+  \node[block, below left=10mm and 13mm of perfil] (negado) {Acesso negado e registro de auditoria};
+  \node[block, below right=10mm and 13mm of perfil] (modulos) {Acesso aos módulos (projetos, publicações, orientações e finanças)};
+  \node[block, below=of modulos] (regras) {Backend aplica regras de negócio e permissões};
+  \node[block, below=of regras] (dados) {Persistência no PostgreSQL e atualização de indicadores};
+  \node[block, below=of dados] (integracoes) {Sincronização com integrações externas quando aplicável};
+  \node[block, below=of integracoes] (fim) {Dashboards, relatórios e trilha de auditoria atualizados};
+
+  \draw[arrow] (start) -- (login);
+  \draw[arrow] (login) -- (perfil);
+  \draw[arrow] (perfil) -- node[above, pos=0.55] {não} (negado);
+  \draw[arrow] (perfil) -- node[above, pos=0.55] {sim} (modulos);
+  \draw[arrow] (modulos) -- (regras);
+  \draw[arrow] (regras) -- (dados);
+  \draw[arrow] (dados) -- (integracoes);
+  \draw[arrow] (integracoes) -- (fim);
+\end{tikzpicture}
+\caption{Fluxo operacional macro da arquitetura do SGPPF.}
+\end{figure}
+
+\subsection{Visão de Comunicação entre Camadas}
+Em termos de comunicação, o frontend consome endpoints versionados da API, a camada de aplicação consolida regras e orquestra serviços, e a camada de persistência mantém a consistência dos dados operacionais. A camada de integração funciona como fronteira controlada para entrada e sincronização de dados externos, evitando acoplamento direto entre sistemas terceiros e o núcleo de domínio.
+
+Para garantir previsibilidade e governança técnica, a comunicação entre camadas deve seguir contrato explícito, padronização de payload e rastreabilidade de chamadas. Toda requisição relevante deverá gerar identificação de correlação para facilitar diagnóstico operacional, auditoria e análise de desempenho.
+
+\textbf{Fluxo padrão de comunicação:}
+\begin{enumerate}[leftmargin=*]
+  \item O usuário interage com a interface web na camada de apresentação.
+  \item O frontend envia requisição autenticada para a API do backend.
+  \item A camada de aplicação valida token, perfil e regras de autorização.
+  \item A regra de negócio é executada e, quando necessário, consulta persistência e integrações.
+  \item A resposta retorna ao frontend com status padronizado e dados para renderização.
+  \item A operação é registrada em logs e auditoria conforme criticidade funcional.
+\end{enumerate}
+
+\textbf{Regras de comunicação intercamadas:}
+\begin{itemize}[leftmargin=*]
+  \item A camada de apresentação não acessa banco de dados diretamente.
+  \item A camada de aplicação é o único ponto autorizado para aplicar regras de domínio.
+  \item Integrações externas devem ser acionadas por serviços dedicados e nunca pelo frontend.
+  \item Erros devem ser retornados em formato consistente (código, mensagem, contexto e rastreio).
+  \item Operações críticas devem registrar usuário, data/hora e tipo de alteração.
+\end{itemize}
+
+\textbf{Classificação de fluxos:}
+\begin{itemize}[leftmargin=*]
+  \item \textit{Fluxo síncrono:} autenticação, consultas operacionais e atualizações cadastrais.
+  \item \textit{Fluxo assíncrono:} sincronizações externas, processamento periódico e consolidação de indicadores.
+\end{itemize}
+
+\subsection{Diretrizes de Evolução Arquitetural}
+As diretrizes de evolução arquitetural do SGPPF estabelecem como o sistema deve crescer sem comprometer estabilidade, segurança e qualidade dos dados institucionais. Toda evolução deve preservar compatibilidade funcional, reduzir acoplamento entre componentes e manter clareza de responsabilidades por camada.
+
+\textbf{Diretrizes obrigatórias:}
+\begin{itemize}[leftmargin=*]
+  \item Novos módulos devem seguir o mesmo padrão de separação em camadas.
+  \item Alterações de integração não devem impactar diretamente a interface do usuário.
+  \item Toda funcionalidade crítica deve manter trilha de auditoria.
+  \item Mudanças estruturais devem ser acompanhadas de testes de regressão e documentação técnica.
+  \item Evoluções de API devem manter versionamento e política de compatibilidade retroativa quando aplicável.
+  \item Novas regras de negócio devem ser implementadas em serviços de domínio, evitando lógica espalhada em controllers.
+  \item Alterações em banco de dados devem ser realizadas por migrações versionadas e revisadas.
+\end{itemize}
+
+\textbf{Critérios para aprovação de evolução arquitetural:}
+\begin{itemize}[leftmargin=*]
+  \item Impacto técnico mapeado (desempenho, segurança, operação e manutenção).
+  \item Risco funcional identificado e plano de rollback definido.
+  \item Cobertura mínima de testes atualizada para os componentes alterados.
+  \item Atualização da documentação técnica e dos diagramas arquiteturais.
+  \item Validação em ambiente de homologação antes da liberação em produção.
+\end{itemize}
+
+\textbf{Estratégia de evolução contínua:}
+\begin{itemize}[leftmargin=*]
+  \item Priorizar modularização progressiva para facilitar manutenção e escalabilidade.
+  \item Medir continuamente latência, taxa de erro e uso de recursos para orientar refatorações.
+  \item Reavaliar integrações externas periodicamente quanto a custo, confiabilidade e aderência institucional.
+\end{itemize}
+
+\section{Tecnologias Recomendadas}
+
+\subsection{Implementação A: Servidor com Docker (Backend + Frontend JSX com Vite)}
+Esta alternativa prioriza maior controle técnico, portabilidade e facilidade de evolução. O backend roda em contêiner dedicado e o frontend (React com JSX gerado por Vite) é empacotado e publicado no mesmo ambiente de servidor, com proxy reverso para roteamento.
+
+\textbf{Componentes da solução:}
+\begin{itemize}[leftmargin=*]
+  \item \textbf{Frontend:} React com JSX (Vite), build estático para produção.
+  \item \textbf{Backend:} API em FastAPI com autenticação institucional e regras de negócio.
+  \item \textbf{Banco de dados:} PostgreSQL em serviço separado.
+  \item \textbf{Gateway:} Nginx para TLS, roteamento e entrega dos artefatos web.
+\end{itemize}
+
+\textbf{Topologia recomendada em produção:}
+\begin{itemize}[leftmargin=*]
+  \item Contêiner \texttt{frontend} (build Vite + conteúdo estático servido por Nginx).
+  \item Contêiner \texttt{backend} (FastAPI com workers configuráveis).
+  \item Contêiner \texttt{db} (PostgreSQL com volume persistente).
+  \item Rede Docker privada entre serviços e exposição pública apenas do proxy.
+\end{itemize}
+
+\textbf{Diretrizes operacionais:}
+\begin{itemize}[leftmargin=*]
+  \item Configurações por variáveis de ambiente e arquivos \texttt{.env} por ambiente.
+  \item Pipeline CI/CD com etapas de build, testes, publicação de imagem e deploy.
+  \item Migrações de banco executadas de forma versionada antes de subir nova release.
+  \item Observabilidade com logs centralizados, métricas e health checks por serviço.
+\end{itemize}
+
+\textbf{Fluxo de implantação resumido:}
+\begin{enumerate}[leftmargin=*]
+  \item Gerar build do frontend via Vite e imagem Docker do backend.
+  \item Publicar imagens em registro privado institucional.
+  \item Aplicar \texttt{docker compose} no servidor alvo com secrets e variáveis seguras.
+  \item Validar autenticação Azure AD, rotas críticas e painéis após o deploy.
+\end{enumerate}
+
+\subsection{Implementação B: Microsoft Power Apps}
+Esta alternativa prioriza velocidade de entrega para processos administrativos, baixo esforço de desenvolvimento e integração nativa com o ecossistema Microsoft já utilizado institucionalmente.
+
+\textbf{Arquitetura funcional sugerida:}
+\begin{itemize}[leftmargin=*]
+  \item Aplicação principal construída em Power Apps (Canvas App ou Model-Driven App).
+  \item Persistência em Dataverse ou SQL Server/Azure SQL conforme governança de dados.
+  \item Autenticação e controle de acesso integrados ao Azure AD.
+  \item Fluxos automatizados de integração e notificações via Power Automate.
+\end{itemize}
+
+\textbf{Capacidades principais para o SGPPF:}
+\begin{itemize}[leftmargin=*]
+  \item Formulários de cadastro para pesquisadores, projetos, publicações e orientações.
+  \item Painéis operacionais com filtros por setor e perfil de usuário.
+  \item Automação de aprovações e alertas de prazos por e-mail/Teams.
+  \item Governança com trilha de auditoria e permissões por função institucional.
+\end{itemize}
+
+\textbf{Limitações e cuidados técnicos:}
+\begin{itemize}[leftmargin=*]
+  \item Avaliar limites de conectores, delegação e licenciamento por usuário/perfil.
+  \item Definir estratégia para integrações avançadas (ORCID, CrossRef e Lattes) via APIs intermediárias.
+  \item Planejar modelo de dados para evitar duplicidade e inconsistência entre fontes.
+\end{itemize}
+
+\textbf{Cenário recomendado de adoção:}
+\begin{itemize}[leftmargin=*]
+  \item Uso inicial para módulos administrativos e fluxo de validação interna.
+  \item Evolução híbrida: Power Apps para operação rápida e backend dedicado para integrações complexas.
+\end{itemize}
+
+\section{Autenticação e Login}
+A autenticação será realizada por meio das contas institucionais Microsoft (Outlook/Azure AD). Ao acessar o SGPPF, o usuário é automaticamente redirecionado ao provedor institucional para efetuar o login; após a validação das credenciais no Azure AD, a plataforma recebe um token OAuth2 que é verificado pelo backend para confirmar a identidade e os escopos de acesso. Confirmada a validade do token e as permissões correspondentes, o usuário passa a ter acesso aos módulos autorizados do sistema. Durante esse processo são obtidos atributos básicos do usuário — nome completo, e‑mail institucional, identificador institucional, departamento e cargo — que são usados para associação de perfil e auditoria. Essa abordagem garante Single Sign‑On (SSO), aproveita os controles de segurança corporativa da instituição e elimina a necessidade de armazenar senhas na plataforma.
+
+\section{Estrutura de Menus}
+\begin{itemize}[leftmargin=*]
+  \item \textbf{Dashboard} -- Campos exibidos: total de publicações; publicações nos últimos 3 anos; total de orientações; orientações concluídas; projetos financiados ativos; valor total captado; H‑index (opcional); total de citações (Google Scholar); última atualização dos dados.
+
+  \item \textbf{Pesquisadores} -- Dados pessoais: nome completo; e‑mail institucional; departamento; unidade; cargo; área de atuação; Currículo Lattes; ORCID; ID Google Scholar; ResearchGate (opcional). Dados institucionais: tipo de vínculo; data de ingresso; status (ativo/inativo).
+
+  \item \textbf{Projetos} -- Dados do projeto: título; código do projeto; agência financiadora; modalidade; pesquisador responsável; equipe envolvida; data de início; data de término; status; vínculos com publicações e orientações.
+
+  \item \textbf{Publicações} -- Dados da publicação: título; DOI; ano; tipo (artigo, conferência, livro, capítulo, relatório técnico, patente); periódico/evento; Qualis; ISSN; URL; número de citações; fator de impacto; área de conhecimento. Autoria: autor principal; coautores; grupo responsável. Funcionalidades: importar via DOI; importar via Google Scholar; importar via BibTeX; exportar CSV/Excel.
+
+  \item \textbf{Orientações} -- Dados da orientação: nome do aluno; nível (iniciação científica, mestrado, doutorado, pós‑doc, TCC); título do trabalho; orientador; coorientador; data de início; data de conclusão; status (em andamento, concluída, cancelada); bolsa associada; agência financiadora.
+
+  \item \textbf{Financiamentos} -- Dados do projeto financiado: título do projeto; código do projeto; agência financiadora; modalidade; pesquisador responsável; equipe envolvida. Dados financeiros: valor aprovado; valor recebido; moeda; data de início; data de término; status. Agências contempladas: FAPESP; CNPq; CAPES; empresas; agências internacionais.
+
+  \item \textbf{Relatórios} -- Relatórios gerenciais e operacionais com filtros por período, departamento, pesquisador, grupo e agência; exportação em PDF/CSV; agendamento de relatórios periódicos.
+
+  \item \textbf{Administração} -- Gestão de usuários, permissões, grupos de pesquisa, configurações de integração (APIs), logs de auditoria, configurações de backup e parâmetros do sistema.
+\end{itemize}
+
+\section{Banco de Dados}
+\subsection{Principais Tabelas}
+\begin{longtable}{p{4cm} p{10cm}}
+\textbf{usuarios} & \textbf{Descrição:} Contém credenciais e metadados mínimos do usuário autenticado. Campos principais: \texttt{id (PK)}; \texttt{nome}; \texttt{email (único)}; \texttt{perfil (Administrador, Coordenador, Pesquisador, Consultor)}; \texttt{instituicao\_id}; \texttt{created\_at}; \texttt{updated\_at} \\
+\textbf{pesquisadores} & \textbf{Descrição:} Dados acadêmicos e identificadores externos. Campos principais: \texttt{id (PK)}; \texttt{usuario\_id (FK -> usuarios.id)}; \texttt{orcid}; \texttt{scholar\_id}; \texttt{lattes\_url}; \texttt{area\_atuacao}; \texttt{departamento}; \texttt{status}; \texttt{created\_at}; \texttt{updated\_at} \\
+\textbf{grupos} & \textbf{Descrição:} Unidades de pesquisa ou laboratórios. Campos: \texttt{id (PK)}; \texttt{nome}; \texttt{coordenador\_id (FK -> pesquisadores.id)}; \texttt{descricao}; \texttt{created\_at} \\
+\textbf{projetos} & \textbf{Descrição:} Informações dos projetos de pesquisa. Campos: \texttt{id (PK)}; \texttt{titulo}; \texttt{codigo\_projeto (único)}; \texttt{agencia\_financiadora}; \texttt{modalidade}; \texttt{pesquisador\_responsavel\_id (FK -> pesquisadores.id)}; \texttt{data\_inicio}; \texttt{data\_termino}; \texttt{status}; \texttt{valor\_aprovado}; \texttt{created\_at}; \texttt{updated\_at} \\
+\textbf{publicacoes} & \textbf{Descrição:} Metadados bibliográficos e vínculo com autores e projetos. Campos: \texttt{id (PK)}; \texttt{titulo}; \texttt{doi}; \texttt{ano}; \texttt{tipo}; \texttt{periodico}; \texttt{issn}; \texttt{url}; \texttt{fator\_impacto}; \texttt{area\_conhecimento}; \texttt{created\_at}; \texttt{updated\_at} \\
+\textbf{orientacoes} & \textbf{Descrição:} Registros de orientações acadêmicas. Campos: \texttt{id (PK)}; \texttt{aluno}; \texttt{nivel}; \texttt{titulo\_trabalho}; \texttt{orientador\_id (FK -> pesquisadores.id)}; \texttt{coorientador\_id (FK -> pesquisadores.id, opcional)}; \texttt{data\_inicio}; \texttt{data\_conclusao}; \texttt{status}; \texttt{created\_at}; \texttt{updated\_at} \\
+\textbf{financiamentos} & \textbf{Descrição:} Registro das parcelas e contratos financeiros associados a projetos. Campos: \texttt{id (PK)}; \texttt{projeto\_id (FK -> projetos.id)}; \texttt{agencia}; \texttt{valor\_aprovado}; \texttt{valor\_recebido}; \texttt{moeda}; \texttt{data\_inicio}; \texttt{data\_termino}; \texttt{status}; \texttt{created\_at}; \texttt{updated\_at} \\
+\textbf{autores\_publicacoes} & \textbf{Descrição:} Tabela associativa N:N entre \texttt{pesquisadores} e \texttt{publicacoes}. Campos: \texttt{publicacao\_id (FK -> publicacoes.id)}; \texttt{pesquisador\_id (FK -> pesquisadores.id)}; \texttt{ordem\_autoria}; \texttt{role} \\
+\textbf{projeto\_publicacao} & \textbf{Descrição:} Associação entre projetos e publicações (N:N quando aplicável). Campos: \texttt{projeto\_id (FK -> projetos.id)}; \texttt{publicacao\_id (FK -> publicacoes.id)} \\
+\textbf{grupo\_pesquisador} & \textbf{Descrição:} Associação N:N entre \texttt{grupos} e \texttt{pesquisadores}. Campos: \texttt{grupo\_id (FK -> grupos.id)}; \texttt{pesquisador\_id (FK -> pesquisadores.id)}; \texttt{data\_vinculo} \\
+\end{longtable}
+
+\subsection{Modelo de Entidades e Relacionamentos (ER)}
+O modelo a seguir apresenta as principais relações entre entidades do domínio (chaves primárias e estrangeiras, e tabelas associativas para relações N:N).
+
+\clearpage
+\begin{landscape}
+\thispagestyle{plain}
+\begin{figure}[p]
+\centering
+\footnotesize
+\begin{tikzpicture}[
+  ent/.style={rectangle, draw=black, fill=gray!6, rounded corners, minimum width=5.0cm, text width=5.0cm, align=left, inner sep=6pt},
+  rel/.style={rectangle, draw=black, dashed, fill=white, minimum width=4.0cm, text width=4.0cm, align=center, inner sep=4pt},
+  arrow/.style={-{Latex[length=2mm]}, thick, shorten >=2pt, shorten <=2pt}
+]
+  % Expanded layout coordinates for landscape (more horizontal and vertical spacing)
+  \node[ent] (usuarios) at (0,5) {\textbf{usuarios}\\PK: id\\email, nome, perfil};
+  \node[ent] (pesquisadores) at (7,5) {\textbf{pesquisadores}\\PK: id\\FK: usuario\_id\\orcid, lattes\_url};
+  \node[ent] (publicacoes) at (14,5) {\textbf{publicacoes}\\PK: id\\doi, titulo, ano};
+
+  \node[ent] (grupos) at (0,0) {\textbf{grupos}\\PK: id\\nome, coordenador\_id};
+  \node[ent] (projetos) at (7,0) {\textbf{projetos}\\PK: id\\titulo, codigo\_projeto, pesquisador\_responsavel\_id};
+  \node[ent] (financiamentos) at (14,0) {\textbf{financiamentos}\\PK: id\\FK: projeto\_id, agencia, valor\_aprovado};
+
+  \node[ent] (orientacoes) at (7,-5) {\textbf{orientacoes}\\PK: id\\orientador\_id, aluno, nivel};
+
+  % Associative (placed between related entities)
+  \node[rel] (autores) at (11,2.2) {\textbf{autores\_publicacoes}\\publicacao\_id, pesquisador\_id};
+  \node[rel] (projpub) at (7,-1.8) {\textbf{projeto\_publicacao}\\projeto\_id, publicacao\_id};
+  \node[rel] (grppes) at (3.2,2.2) {\textbf{grupo\_pesquisador}\\grupo\_id, pesquisador\_id};
+
+  % Edges (use curves and orthogonal routing to reduce overlap)
+  \draw[arrow] (pesquisadores.west) to[out=180,in=0] node[above,pos=0.45]{usuario\_id -> usuarios.id} (usuarios.east);
+  \draw[arrow] (projetos.north) to[out=90,in=270] node[right]{pesquisador\_responsavel\_id -> pesquisadores.id} (pesquisadores.south);
+  \draw[arrow] (orientacoes.north) -- node[left]{orientador\_id -> pesquisadores.id} (pesquisadores.south);
+  \draw[arrow] (financiamentos.west) -- node[above]{projeto\_id -> projetos.id} (projetos.east);
+
+  \draw[arrow] (autores.north) -- node[right]{publicacao\_id -> publicacoes.id} (publicacoes.south);
+  \draw[arrow] (autores.west) to[out=210,in=20] node[below,pos=0.55]{pesquisador\_id -> pesquisadores.id} (pesquisadores.south east);
+
+  \draw[arrow] (projpub.north) -- node[right]{publicacao\_id -> publicacoes.id} (publicacoes.south west);
+  \draw[arrow] (projpub.south) -- node[below]{projeto\_id -> projetos.id} (projetos.south);
+
+  \draw[arrow] (grppes.north) -- node[left]{grupo\_id -> grupos.id} (grupos.south);
+  \draw[arrow] (grppes.east) to[out=20,in=200] node[below,pos=0.55]{pesquisador\_id -> pesquisadores.id} (pesquisadores.south west);
+\end{tikzpicture}
+\caption{Diagrama ER simplificado do SGPPF}
+\end{figure}
+\end{landscape}
+\clearpage
+
+\section{Infraestrutura}
+\subsection{Ambiente de Desenvolvimento}
+Recomenda-se um ambiente de desenvolvimento padronizado para todas as equipes composto por contêineres Docker com imagens replicáveis. Componentes básicos:
+\begin{itemize}[leftmargin=*]
+  \item \textbf{Docker Compose} para orquestração local dos serviços (backend, frontend, banco, cache).
+  \item \textbf{PostgreSQL} com dados de amostra e esquema migrado via ferramenta de migrações (Alembic/Flask-Migrate/Flyway).
+  \item \textbf{FastAPI} (ou framework escolhido) com Uvicorn/Gunicorn em modo de desenvolvimento com hot-reload.
+  \item \textbf{React + Vite} para o frontend, com lint e checks em pré-commit.
+  \item \textbf{Dependências de desenvolvimento:} linters, formatação (Prettier/Black), test runners (pytest/Jest) e ferramentas de análise estática.
+  \item \textbf{Ambientes isolados por branch}: cada feature principal deve poder ser executada localmente com o mesmo conjunto de containers para evitar "works on my machine".
+\end{itemize}
+
+\subsection{Ambiente de Produção}
+A topologia de produção deve considerar alta disponibilidade, recuperação e observabilidade. Recomendações:
+\begin{itemize}[leftmargin=*]
+  \item \textbf{Cluster de contêineres:} Kubernetes (EKS/AKS/GKE) ou Docker Swarm para escala e orquestração; alternativa simples: execução via Docker Compose gerenciado com systemd e monitoramento.
+  \item \textbf{Recursos iniciais por nó (exemplo):} 4–8 vCPUs, 8–16 GB RAM por instância de aplicação; banco de dados em instância dedicada com alta IOPS (SSD NVMe) e tamanho conforme volume de dados previstos.
+  \item \textbf{Banco de dados:} PostgreSQL em configuração replicada (Primary + Hot Standby) com WAL shipping/streaming replication e backups automáticos (PITR).
+  \item \textbf{Rede e Segurança:} rede privada para serviços internos, balanceador reverso (NGINX/Traefik) com TLS gerenciado (Let's Encrypt ou ACM), regras de firewall restritivas e VPC privada.
+  \item \textbf{Escalabilidade:} horizontarizar a camada de aplicação com autoscaling (CPU/RPS) e usar cache (Redis) para cargas de leitura pesadas.
+  \item \textbf{Observabilidade:} logs centralizados (ELK/EFK), métricas (Prometheus) e painéis (Grafana), além de alertas para SLOs/SLA.
+  \item \textbf{Segurança operacional:} secrets gerenciados (Vault, AWS Secrets Manager, Azure Key Vault), variações de configuração por ambiente e revisão de configuração de acesso.
+\end{itemize}
+
+\section{Backup}
+Política recomendada e práticas operacionais:
+\begin{itemize}[leftmargin=*]
+  \item \textbf{Backups contínuos + PITR:} habilitar Point-in-Time Recovery (PITR) via WAL archiving para permitir restauração até um instante específico.
+  \item \textbf{Snapshot + Incremental:} snapshots diários incrementais e backups completos semanais armazenados em repositório separado (object storage ou bloco persistente replicado).
+  \item \textbf{Criptografia e segregação:} backups em repouso criptografados e com acesso controlado por IAM/políticas; usar chaves gerenciadas pela instituição.
+  \item \textbf{Retenção e ciclo:} retenção mínima de 90 dias para backups diários; manter backups pontuais de longo prazo (1–3 anos) conforme requisitos de conformidade.
+  \item \textbf{Testes de restauração:} executar testes de restauração trimestrais automatizados para validar integridade dos backups e procedimentos de recovery.
+  \item \textbf{Procedimentos operacionais:} playbooks para recuperação (RTO/RPO), responsáveis nomeados e checklist para restauração parcial e completa.
+  \item \textbf{Auditoria e logs:} registrar operações de backup e restauração em sistema de auditoria com correlação a incidentes.
+\end{itemize}
+
+\section{Cronograma de Desenvolvimento}
+Proposta de cronograma inicial (estimativa para MVP institucional):
+\begin{itemize}[leftmargin=*]
+  \item \textbf{Fase 1 — Levantamento de requisitos (2–3 semanas):} workshops com áreas, definição de escopo mínimo do MVP e mapeamento de fontes de dados.
+  \item \textbf{Fase 2 — Modelagem do banco e API (2–3 semanas):} definição do schema, entidades principais, e contratos de API (OpenAPI).
+  \item \textbf{Fase 3 — Desenvolvimento Backend (4–6 semanas):} implementação das APIs essenciais, autenticação/autorizações e testes unitários.
+  \item \textbf{Fase 4 — Desenvolvimento Frontend (4–6 semanas, em paralelo):} painéis básicos, formulários de cadastro e integração com APIs.
+  \item \textbf{Fase 5 — Integrações externas (3–4 semanas):} conectores para Azure AD, importação via DOI/ORCID e sincronizações periódicas.
+  \item \textbf{Fase 6 — Testes e homologação (3–4 semanas):} testes E2E, carga e segurança; homologação com pilotos.
+  \item \textbf{Fase 7 — Implantação e corte (1–2 semanas):} migração controlada, validação de dados, e início de operação assistida.
+  \item \textbf{Fase 8 — Treinamento e transição para operação (2 semanas):} capacitação de administradores e usuários-chave, plantão inicial de suporte.
+\end{itemize}
+
+Cada fase deve produzir entregáveis claros (documento de requisitos, schema SQL, artefatos de API, builds de release, scripts de migração, plano de rollback e documentação de operação).
+
+\section{Evoluções Futuras}
+Aplicativo móvel; Integração com Power BI; Integração com Teams; Inteligência Artificial para análise de produtividade; Geração automática de relatórios para agências de fomento; Integração automática com editais.
+
+\section{Regras de Implementação}
+Esta seção define diretrizes técnicas mínimas para orientar desenvolvimento, operação e manutenção do SGPPF.
+
+\subsection{Princípios de Engenharia}
+\begin{itemize}[leftmargin=*]
+  \item Separação clara entre frontend, backend, banco de dados e integrações externas.
+  \item Evolução incremental orientada por entregas de valor (MVP e releases curtas).
+  \item Rastreabilidade entre requisito, implementação, teste e evidência de validação.
+  \item Automação sempre que possível (testes, build, deploy e geração de relatórios).
+\end{itemize}
+
+\subsection{Padrões de API e Backend}
+\begin{itemize}[leftmargin=*]
+  \item APIs REST versionadas com prefixo \texttt{/api/v1}.
+  \item Contratos de API documentados em OpenAPI (Swagger) e publicados com cada release.
+  \item Validação de entrada obrigatória com Pydantic em todos os endpoints.
+  \item Retorno de erros padronizado contendo código, mensagem e identificador de rastreio.
+  \item Paginação, ordenação e filtros em endpoints de listagem.
+  \item Proibição de lógica de negócio em controllers; regras de negócio devem residir em serviços de domínio.
+\end{itemize}
+
+\subsection{Padrões de Frontend}
+\begin{itemize}[leftmargin=*]
+  \item Aplicação em React + TypeScript com tipagem estrita habilitada.
+  \item Organização por módulos funcionais (pesquisadores, projetos, publicações, etc.).
+  \item Componentes reutilizáveis para formulários, tabelas, gráficos e estados de carregamento.
+  \item Tratamento consistente de erro e feedback visual para operações críticas.
+  \item Acessibilidade mínima: contraste adequado, navegação por teclado e textos alternativos.
+\end{itemize}
+
+\subsection{Banco de Dados e Persistência}
+\begin{itemize}[leftmargin=*]
+  \item Migrações obrigatórias e versionadas (sem alteração manual em produção).
+  \item Chaves estrangeiras, índices e constraints para garantir integridade referencial.
+  \item Campos obrigatórios de auditoria em entidades transacionais: \texttt{created\_at}, \texttt{updated\_at}, \texttt{created\_by}, \texttt{updated\_by}.
+  \item Soft delete para entidades administrativas relevantes, quando aplicável.
+  \item Rotina de revisão de performance para consultas críticas (dashboards e relatórios).
+\end{itemize}
+
+\subsection{Segurança de Implementação}
+\begin{itemize}[leftmargin=*]
+  \item Autenticação via Azure AD com OAuth2/OpenID Connect e validação de token no backend.
+  \item Autorização baseada em papéis (RBAC) e escopos por funcionalidade.
+  \item Criptografia TLS em trânsito e uso de segredos apenas por variáveis de ambiente.
+  \item Sanitização de entradas para mitigar SQL Injection e XSS.
+  \item Registro de eventos de segurança: login, falha de login, elevação de privilégio e exportação de dados.
+\end{itemize}
+
+\subsection{Integrações Externas}
+\begin{itemize}[leftmargin=*]
+  \item Integrações desacopladas por adaptadores (Azure AD, ORCID, CrossRef, Scholar, Lattes).
+  \item Timeout, retry com backoff e circuit breaker para chamadas externas.
+  \item Logs de integração com correlação por identificador de requisição.
+  \item Jobs agendados para sincronizações periódicas com controle de concorrência.
+\end{itemize}
+
+\subsection{Qualidade, Testes e Cobertura}
+\begin{itemize}[leftmargin=*]
+  \item Testes unitários para serviços críticos e regras de negócio.
+  \item Testes de integração para endpoints, autenticação e persistência.
+  \item Testes end-to-end para fluxos essenciais: cadastro, submissão de projeto, publicação e relatórios.
+  \item Meta inicial de cobertura automatizada: mínimo de 70\% no backend e crescimento progressivo.
+  \item Nenhuma funcionalidade crítica deve ser entregue sem cenário de teste de sucesso e falha.
+\end{itemize}
+
+\subsection{CI/CD e Governança de Código}
+\begin{itemize}[leftmargin=*]
+  \item Estratégia de branches: \texttt{main}, \texttt{develop}, \texttt{feature/*}, \texttt{hotfix/*}.
+  \item Pull Request obrigatório com revisão por, no mínimo, um aprovador técnico.
+  \item Pipeline CI com etapas mínimas: lint, testes automatizados, build e verificação de segurança.
+  \item Releases versionadas seguindo versionamento semântico (SemVer).
+  \item Deploy em produção somente com artefato validado no ambiente de homologação.
+\end{itemize}
+
+\subsection{Observabilidade e Operação}
+\begin{itemize}[leftmargin=*]
+  \item Logs estruturados com nível (INFO, WARN, ERROR) e identificador de correlação.
+  \item Métricas técnicas obrigatórias: latência, taxa de erro, throughput e uso de recursos.
+  \item Dashboards operacionais em Grafana com alertas para indisponibilidade e degradação.
+  \item SLO inicial sugerido: disponibilidade mensal de 99,5\%.
+\end{itemize}
+
+\subsection{Regras de Dados e Conformidade}
+\begin{itemize}[leftmargin=*]
+  \item Adequação à LGPD com princípio de minimização de dados.
+  \item Dados pessoais sensíveis devem possuir política de acesso restrita e trilha de auditoria.
+  \item Exportação de relatórios deve respeitar perfil de acesso e mascaramento quando aplicável.
+  \item Política de retenção e descarte de dados deve ser formalizada institucionalmente.
+\end{itemize}
+
+\subsection{Critérios de Aceitação de Entrega}
+Uma entrega será considerada apta quando atender simultaneamente aos itens abaixo:
+\begin{itemize}[leftmargin=*]
+  \item Requisito funcional implementado e demonstrado.
+  \item Testes automatizados executados sem falhas.
+  \item Documentação técnica e de uso atualizada.
+  \item Auditoria e controle de acesso validados.
+  \item Aprovação formal do responsável da área de pesquisa.
+\end{itemize}
+
+\section{Implantação, Treinamento e Operação}
+A implantação do SGPPF deve ser conduzida como um projeto de mudança organizacional e tecnológica, com fases claramente definidas para reduzir riscos e garantir adoção. Inicialmente deverá ser realizado um piloto controlado em um ou dois setores com objetivo de validar integrações, desempenho e processos operacionais. Durante a fase de preparação, as equipes responsáveis devem provisionar ambientes de desenvolvimento, homologação e produção, configurar segurança, certificados TLS e mecanismos de backup, além de estabelecer a rede privada entre componentes e o proxy reverso responsável pela exposição controlada dos serviços.
+
+O plano de migração de dados deve mapear fontes existentes, definir regras de transformação, reconciliar duplicidades e executar cargas de teste em homologação até que os responsáveis validem a qualidade dos dados. Para minimizar impacto operacional, recomenda-se a realização de cargas iniciais em janela de baixa utilização e um período de coexistência em que os dados sejam sincronizados entre sistemas legados e o SGPPF, até o corte final.
+
+O corte para produção deve incluir um roteiro com passos de rollback bem definidos, verificação automática de health checks e validações de integridade dos dados. Devem existir playbooks operacionais para os principais cenários de falha (autenticação, indisponibilidade do banco, degradação de performance) e responsáveis designados para execução das ações corretivas. A automação de deploy via pipelines garante reprodutibilidade; as migrations do banco devem ser aplicadas de forma controlada e testada, com checkpoints que permitam reversão segura quando necessário.
+
+O treinamento deve contemplar perfis distintos: administradores de sistema (operações, deploy e recuperação), equipe de integração (APIs, adaptadores e sincronizações) e usuários finais (pesquisadores, coordenadores e consultores). Para cada público, deve ser preparado material objetivo (manuais, vídeos curtos e FAQs), sessões práticas e um período de plantão de acompanhamento no pós-implantação para receber chamados e corrigir procedimentos. A adoção de um catálogo de serviços e acordo de níveis de serviço (SLA) para suporte ajuda a definir expectativas e fluxos de escalonamento.
+
+Operação e suporte devem ser organizados em níveis: suporte de primeiro nível para triagem e resolução de casos simples; segundo nível para investigação de integrações e base de dados; e terceiro nível para desenvolvedores e fornecedores de componentes críticos. Procedimentos de registro de incidentes, rastreio por identificador de correlação e post-mortem para eventos relevantes são obrigatórios para melhoria contínua.
+
+Em termos de observabilidade, além de logs centralizados, é essencial configurar métricas e alertas que cubram disponibilidade, latência, erros por endpoint e consumo de recursos. Backups automatizados e testes periódicos de restauração devem ser parte integrante do plano de continuidade, com política de retenção definida conforme requisitos institucionais e conformidade com LGPD.
+
+Por fim, a operação contínua deve prever ciclos regulares de revisão técnica e funcional, priorização de débitos técnicos, planejamento de evoluções e um processo de governança que inclua representantes da área de pesquisa para validar mudanças que impactem processos acadêmicos. A combinação de implantação controlada, treinamento dirigido e operações bem definidas maximiza a chance de sucesso do SGPPF na Mauá.
+
+\section{Conclusão}
+O Sistema de Gestão de Projetos, Publicações e Financiamentos visa fornecer uma plataforma institucional moderna, segura e integrada para gestão da pesquisa acadêmica do CEUN-IMT.
+
+A solução permitirá centralizar informações atualmente distribuídas em diferentes sistemas, automatizar processos administrativos, melhorar a geração de indicadores estratégicos e aumentar a eficiência na gestão da pesquisa científica institucional.
+
+\vfill
+\noindent Versão 1.0 -- Centro Universitário do Instituto Mauá de Tecnologia (CEUN-IMT)
+
+\end{document}

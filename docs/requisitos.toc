@@ -1,0 +1,55 @@
+\babel@toc {brazilian}{}\relax 
+\contentsline {section}{\numberline {1}Introdução}{2}{section.1}%
+\contentsline {subsection}{\numberline {1.1}Contexto}{2}{subsection.1.1}%
+\contentsline {section}{\numberline {2}Objetivos}{3}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Objetivo Geral}{3}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}Objetivos Específicos}{3}{subsection.2.2}%
+\contentsline {section}{\numberline {3}Escopo do Sistema}{3}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Acesso e Cadastro de Pesquisadores}{4}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Cadastro de Grupos e Vínculo Institucional}{4}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}Cadastro Operacional por Pesquisadores}{4}{subsection.3.3}%
+\contentsline {subsection}{\numberline {3.4}Gestão Financeira Setorial e Geral}{4}{subsection.3.4}%
+\contentsline {subsection}{\numberline {3.5}Componentes Funcionais do Escopo}{4}{subsection.3.5}%
+\contentsline {section}{\numberline {4}Perfis de Usuários}{5}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Administrador}{5}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}Coordenador de Setor}{5}{subsection.4.2}%
+\contentsline {subsection}{\numberline {4.3}Pesquisador}{5}{subsection.4.3}%
+\contentsline {subsection}{\numberline {4.4}Consultor}{6}{subsection.4.4}%
+\contentsline {section}{\numberline {5}Arquitetura Geral}{6}{section.5}%
+\contentsline {subsection}{\numberline {5.1}Princípios Arquiteturais}{6}{subsection.5.1}%
+\contentsline {subsection}{\numberline {5.2}Camada de Apresentação}{6}{subsection.5.2}%
+\contentsline {subsection}{\numberline {5.3}Camada de Aplicação}{7}{subsection.5.3}%
+\contentsline {subsection}{\numberline {5.4}Camada de Persistência}{7}{subsection.5.4}%
+\contentsline {subsection}{\numberline {5.5}Camada de Integração}{7}{subsection.5.5}%
+\contentsline {subsection}{\numberline {5.6}Diagrama de Arquitetura em Camadas}{7}{subsection.5.6}%
+\contentsline {subsection}{\numberline {5.7}Fluxograma Operacional da Arquitetura}{8}{subsection.5.7}%
+\contentsline {subsection}{\numberline {5.8}Visão de Comunicação entre Camadas}{8}{subsection.5.8}%
+\contentsline {subsection}{\numberline {5.9}Diretrizes de Evolução Arquitetural}{10}{subsection.5.9}%
+\contentsline {section}{\numberline {6}Tecnologias Recomendadas}{11}{section.6}%
+\contentsline {subsection}{\numberline {6.1}Implementação A: Servidor com Docker (Backend + Frontend JSX com Vite)}{11}{subsection.6.1}%
+\contentsline {subsection}{\numberline {6.2}Implementação B: Microsoft Power Apps}{12}{subsection.6.2}%
+\contentsline {section}{\numberline {7}Autenticação e Login}{12}{section.7}%
+\contentsline {section}{\numberline {8}Estrutura de Menus}{13}{section.8}%
+\contentsline {section}{\numberline {9}Banco de Dados}{13}{section.9}%
+\contentsline {subsection}{\numberline {9.1}Principais Tabelas}{13}{subsection.9.1}%
+\contentsline {subsection}{\numberline {9.2}Modelo de Entidades e Relacionamentos (ER)}{15}{subsection.9.2}%
+\contentsline {section}{\numberline {10}Infraestrutura}{17}{section.10}%
+\contentsline {subsection}{\numberline {10.1}Ambiente de Desenvolvimento}{17}{subsection.10.1}%
+\contentsline {subsection}{\numberline {10.2}Ambiente de Produção}{17}{subsection.10.2}%
+\contentsline {section}{\numberline {11}Backup}{18}{section.11}%
+\contentsline {section}{\numberline {12}Cronograma de Desenvolvimento}{18}{section.12}%
+\contentsline {section}{\numberline {13}Evoluções Futuras}{19}{section.13}%
+\contentsline {section}{\numberline {14}Regras de Implementação}{19}{section.14}%
+\contentsline {subsection}{\numberline {14.1}Princípios de Engenharia}{19}{subsection.14.1}%
+\contentsline {subsection}{\numberline {14.2}Padrões de API e Backend}{19}{subsection.14.2}%
+\contentsline {subsection}{\numberline {14.3}Padrões de Frontend}{19}{subsection.14.3}%
+\contentsline {subsection}{\numberline {14.4}Banco de Dados e Persistência}{20}{subsection.14.4}%
+\contentsline {subsection}{\numberline {14.5}Segurança de Implementação}{20}{subsection.14.5}%
+\contentsline {subsection}{\numberline {14.6}Integrações Externas}{20}{subsection.14.6}%
+\contentsline {subsection}{\numberline {14.7}Qualidade, Testes e Cobertura}{20}{subsection.14.7}%
+\contentsline {subsection}{\numberline {14.8}CI/CD e Governança de Código}{21}{subsection.14.8}%
+\contentsline {subsection}{\numberline {14.9}Observabilidade e Operação}{21}{subsection.14.9}%
+\contentsline {subsection}{\numberline {14.10}Regras de Dados e Conformidade}{21}{subsection.14.10}%
+\contentsline {subsection}{\numberline {14.11}Critérios de Aceitação de Entrega}{21}{subsection.14.11}%
+\contentsline {section}{\numberline {15}Implantação, Treinamento e Operação}{22}{section.15}%
+\contentsline {section}{\numberline {16}Conclusão}{23}{section.16}%

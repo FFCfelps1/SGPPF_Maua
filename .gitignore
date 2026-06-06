@@ -1,0 +1,15 @@
+# Python
+back/.venv/
+back/__pycache__/
+back/**/__pycache__/
+*.py[cod]
+*.db-journal
+
+# Local environment files
+.env
+back/.env
+front/.env
+
+# Frontend
+front/node_modules/
+front/dist/

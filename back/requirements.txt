@@ -9,6 +9,5 @@ PyJWT>=2.8.0
 passlib[bcrypt]>=1.7.4
 bcrypt>=4.0.1
 alembic==1.13.1
-cors-middleware==0.1.0
 httpx>=0.27.0
 

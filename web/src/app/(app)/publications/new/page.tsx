@@ -1,3 +1,4 @@
+import { DoiImport } from "../_components/doi-import";
 import { PublicationForm } from "../_components/publication-form";
 import { createPublication } from "../_actions";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -11,10 +12,21 @@ export default function NewPublicationPage() {
       </h1>
       <Card>
         <CardHeader>
-          <CardTitle>{labels.actions.create}</CardTitle>
+          <CardTitle>{labels.publication.importByDoiTitle}</CardTitle>
         </CardHeader>
         <CardContent>
-          <PublicationForm action={createPublication} afterSuccess="/publications" />
+          <DoiImport />
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader>
+          <CardTitle>{labels.publication.manualEntry}</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <PublicationForm
+            action={createPublication}
+            afterSuccess="/publications"
+          />
         </CardContent>
       </Card>
     </div>

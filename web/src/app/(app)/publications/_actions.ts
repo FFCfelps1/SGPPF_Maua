@@ -7,6 +7,8 @@ import {
   publicationUpdateSchema,
 } from "@/lib/schemas/publication";
 import { createClient } from "@/lib/supabase/server";
+import { fetchCrossref, normalizeDoi, type DoiResult } from "@/lib/crossref";
+import { labels } from "@/lib/labels";
 
 export const createPublication = action(
   publicationCreateSchema,
@@ -77,4 +79,34 @@ export async function removeAuthor(
     .eq("profile_id", profileId);
   if (error) throw error;
   revalidatePath(`/publications/${publicationId}`);
+}
+
+/** Fetch DOI metadata for confirmation. Read-only; the write happens on confirm
+ *  (createPublication, RLS-gated). Existing DOIs surface "view it" — no clobber, no dup. */
+export async function fetchDoi(raw: string): Promise<DoiResult> {
+  const supabase = await createClient();
+  const { data: claims } = await supabase.auth.getClaims();
+  if (!claims?.claims?.sub) {
+    return { status: "error", message: labels.errors.unauthorized };
+  }
+
+  const doi = normalizeDoi(raw);
+  if (!doi) return { status: "error", message: labels.publication.doiInvalid };
+
+  const { data: existing } = await supabase
+    .from("publications")
+    .select("id")
+    .eq("doi", doi)
+    .maybeSingle();
+  if (existing) return { status: "exists", id: existing.id };
+
+  try {
+    const mapped = await fetchCrossref(doi);
+    if (!mapped) {
+      return { status: "error", message: labels.publication.doiNotFound };
+    }
+    return { status: "preview", data: mapped };
+  } catch {
+    return { status: "error", message: labels.publication.doiFailed };
+  }
 }

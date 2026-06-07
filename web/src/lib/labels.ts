@@ -27,6 +27,12 @@ export const labels = {
     exportCsv: "Exportar CSV",
     importDoi: "Importar por DOI",
   },
+  table: {
+    previous: "Anterior",
+    next: "Próxima",
+    records: "registros",
+    recordsOne: "registro",
+  },
   auth: {
     signIn: "Entrar",
     signUp: "Criar conta",

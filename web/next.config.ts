@@ -3,8 +3,6 @@ import type { NextConfig } from "next";
 import "./src/env";
 
 const nextConfig: NextConfig = {
-  // Enables PPR + the `use cache` / `cacheTag` model (Next.js 16).
-  cacheComponents: true,
   // Pin the workspace root to this app (sibling lockfiles otherwise confuse detection).
   turbopack: {
     root: import.meta.dirname,

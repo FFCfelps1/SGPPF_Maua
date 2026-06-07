@@ -368,7 +368,17 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      dashboard_kpis: {
+        Row: {
+          active_funded_projects: number | null
+          completed_advisings: number | null
+          funds_received: number | null
+          recent_publications: number | null
+          total_advisings: number | null
+          total_publications: number | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       authorize: {

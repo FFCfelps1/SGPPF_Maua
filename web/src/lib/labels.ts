@@ -32,11 +32,15 @@ export const labels = {
     signUp: "Criar conta",
     email: "E-mail institucional",
     password: "Senha",
+    fullName: "Nome completo",
+    noAccount: "Não tem conta?",
+    hasAccount: "Já tem conta?",
     signInWithMicrosoft: "Entrar com Microsoft", // shown once Azure provider is enabled
   },
   errors: {
     required: "Campo obrigatório",
     invalidEmail: "E-mail inválido",
+    invalidCredentials: "E-mail ou senha inválidos",
     duplicate: "Esse valor já está em uso",
     notMauaEmail: "Use seu e-mail institucional da Mauá",
     unauthorized: "Você não tem permissão para esta ação",

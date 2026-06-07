@@ -1,6 +1,8 @@
 import { listEntities } from "@/lib/crud/query";
 import { DataTable, type Column } from "@/lib/crud/data-table";
 import { SearchBar } from "@/lib/crud/search-bar";
+import { ExportButton } from "../_components/export-button";
+import { exportEntityCsv } from "../_actions/export";
 import type { ListSearchParams } from "@/lib/crud/pagination";
 import { labels } from "@/lib/labels";
 import type { Database } from "@/lib/database.types";
@@ -37,7 +39,13 @@ export default async function ResearchersPage({
       <h1 className="text-2xl font-semibold tracking-tight">
         {labels.nav.researchers}
       </h1>
-      <SearchBar defaultValue={sp.q} />
+      <div className="flex items-center justify-between gap-4">
+        <SearchBar defaultValue={sp.q} />
+        <ExportButton
+          action={exportEntityCsv.bind(null, "researchers", sp)}
+          filename="pesquisadores.csv"
+        />
+      </div>
       <DataTable
         basePath="/researchers"
         searchParams={sp}

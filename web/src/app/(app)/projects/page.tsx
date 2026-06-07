@@ -2,6 +2,8 @@ import Link from "next/link";
 import { listEntities } from "@/lib/crud/query";
 import { DataTable, type Column } from "@/lib/crud/data-table";
 import { SearchBar } from "@/lib/crud/search-bar";
+import { ExportButton } from "../_components/export-button";
+import { exportEntityCsv } from "../_actions/export";
 import { getMyPermissions } from "@/lib/permissions";
 import { buttonVariants } from "@/components/ui/button";
 import type { ListSearchParams } from "@/lib/crud/pagination";
@@ -49,7 +51,13 @@ export default async function ProjectsPage({
           </Link>
         ) : null}
       </div>
-      <SearchBar defaultValue={sp.q} />
+      <div className="flex items-center justify-between gap-4">
+        <SearchBar defaultValue={sp.q} />
+        <ExportButton
+          action={exportEntityCsv.bind(null, "projects", sp)}
+          filename="projetos.csv"
+        />
+      </div>
       <DataTable
         basePath="/projects"
         searchParams={sp}

@@ -1,7 +1,7 @@
 ---
 title: "feat: Rebuild SGPPF on Next.js + Supabase (v1)"
 type: feat
-status: active
+status: completed
 date: 2026-06-06
 deepened: 2026-06-06
 origin: docs/brainstorms/2026-06-06-sgppf-rebuild-requirements.md

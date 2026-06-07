@@ -6,10 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { labels } from "@/lib/labels";
 
-type AuthAction = (
-  state: { error?: string },
-  formData: FormData,
-) => Promise<{ error?: string }>;
+type AuthState = { error?: string; notice?: string };
+type AuthAction = (state: AuthState, formData: FormData) => Promise<AuthState>;
 
 export function AuthForm({
   action,
@@ -55,7 +53,16 @@ export function AuthForm({
           {state.error}
         </p>
       ) : null}
-      <Button type="submit" disabled={pending} className="w-full">
+      {state.notice ? (
+        <p role="status" className="text-sm text-muted-foreground">
+          {state.notice}
+        </p>
+      ) : null}
+      <Button
+        type="submit"
+        disabled={pending || Boolean(state.notice)}
+        className="w-full"
+      >
         {mode === "signup" ? labels.auth.signUp : labels.auth.signIn}
       </Button>
     </form>

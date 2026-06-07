@@ -1,8 +1,9 @@
 import { createClient } from "@/lib/supabase/server";
+import type { Database } from "@/lib/database.types";
 import { parsePagination, type ListSearchParams } from "./pagination";
 
 export type ListConfig = {
-  table: string;
+  table: keyof Database["public"]["Tables"];
   columns?: string;
   searchColumns?: string[];
   defaultSort?: { column: string; ascending?: boolean };

@@ -48,7 +48,11 @@ export function action<S extends z.ZodType>(
 
     try {
       await handler(parsed.data, { supabase, userId });
-    } catch {
+    } catch (err) {
+      // The client only ever sees the generic message, but the real cause
+      // (most often an RLS denial — e.g. a missing user_role JWT claim) must
+      // be visible in server logs rather than swallowed.
+      console.error("[action] mutation failed", { userId }, err);
       return { ok: false, message: labels.errors.generic };
     }
 

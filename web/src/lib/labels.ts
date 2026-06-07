@@ -155,6 +155,8 @@ export const labels = {
     noAccount: "Não tem conta?",
     hasAccount: "Já tem conta?",
     signInWithMicrosoft: "Entrar com Microsoft", // shown once Azure provider is enabled
+    checkEmail:
+      "Conta criada. Confirme seu e-mail institucional para entrar — verifique sua caixa de entrada.",
   },
   errors: {
     required: "Campo obrigatório",

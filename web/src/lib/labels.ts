@@ -125,6 +125,10 @@ export const labels = {
     completed: "Concluída",
     cancelled: "Cancelada",
   },
+  admin: {
+    status: "Situação",
+    active: "Ativo",
+  },
   actions: {
     create: "Novo",
     edit: "Editar",

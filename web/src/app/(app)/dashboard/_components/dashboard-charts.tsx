@@ -13,8 +13,9 @@ import {
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import type { DashboardKpis, DepartmentMetric } from "@/lib/data/kpis";
 
-export function DashboardCharts({ k }: { k: any }) {
+export function DashboardCharts({ k }: { k: DashboardKpis }) {
   const [selectedMetric, setSelectedMetric] = useState<"projects" | "researchers" | "publications" | "advisings">("projects");
 
   // Data for Advisings Pie Chart
@@ -24,8 +25,8 @@ export function DashboardCharts({ k }: { k: any }) {
   ];
 
   const advisingsConfig = {
-    completed: { label: "Concluídas", color: "hsl(var(--chart-2))" },
-    in_progress: { label: "Em Andamento", color: "hsl(var(--chart-1))" },
+    completed: { label: "Concluídas", color: "var(--chart-2)" },
+    in_progress: { label: "Em Andamento", color: "var(--chart-1)" },
   } satisfies ChartConfig;
 
   // Data for Publications Bar Chart
@@ -35,7 +36,7 @@ export function DashboardCharts({ k }: { k: any }) {
   ];
 
   const pubConfig = {
-    count: { label: "Publicações", color: "hsl(var(--primary))" },
+    count: { label: "Publicações", color: "var(--chart-1)" },
   } satisfies ChartConfig;
 
   // Department distribution data based on selected metric
@@ -45,24 +46,22 @@ export function DashboardCharts({ k }: { k: any }) {
     selectedMetric === "publications" ? k.publications_by_dept :
     k.advisings_by_dept;
 
-  interface DeptChartData {
-    label: string;
-    value: number;
+  interface DeptChartData extends DepartmentMetric {
     fill: string;
   }
 
   const deptData: DeptChartData[] = (rawData ?? [])
-    .filter((d: { value: number }) => d.value > 0)
-    .map((d: { label: string; value: number }, i: number) => ({
+    .filter((d) => d.value > 0)
+    .map((d, i) => ({
       label: d.label || "Indefinido",
       value: d.value,
-      fill: `hsl(var(--chart-${(i % 5) + 1}))`,
+      fill: `var(--chart-${(i % 5) + 1})`,
     }));
 
-  const deptConfig = deptData.reduce((acc: any, d: DeptChartData) => {
+  const deptConfig = deptData.reduce<ChartConfig>((acc, d) => {
     acc[d.label] = { label: d.label, color: d.fill };
     return acc;
-  }, {} as ChartConfig);
+  }, {});
 
   const metrics = [
     { id: "projects", label: "Projetos" },

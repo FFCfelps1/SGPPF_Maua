@@ -107,15 +107,15 @@ export function AppShell({
 
   const sidebar = (
     <aside className="flex h-full flex-col bg-sidebar text-sidebar-foreground">
-      <div className="flex h-20 items-center border-b border-sidebar-border px-4">
+      <div className="flex h-20 items-center border-b border-sidebar-border px-2">
         <Link
           href="/dashboard"
-          className="flex min-w-0 items-center gap-3"
+          className="flex min-w-0 items-center gap-2"
           onClick={() => setMobileOpen(false)}
         >
-          <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-sidebar-primary text-sm font-bold tracking-tight text-sidebar-primary-foreground shadow-sm">
-            IMT
-          </span>
+          <div className="flex shrink-0 items-center">
+            <img src="/logo_maua.svg" alt="Mauá" className="h-10 w-17" />
+          </div>
           <span
             className={cn(
               "min-w-0 transition-opacity lg:hidden xl:block",

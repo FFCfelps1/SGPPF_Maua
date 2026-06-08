@@ -13,3 +13,6 @@ front/.env
 # Frontend
 front/node_modules/
 front/dist/
+
+# Node modules
+node_modules/

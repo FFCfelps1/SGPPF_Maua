@@ -4,6 +4,8 @@ from app.core.config import settings
 from app import models  # Garante que todos os modelos sejam carregados
 from app.core.database import engine, Base
 
+# python -m uvicorn app.main:app --reload
+
 # Garante a criação das tabelas no banco de dados
 Base.metadata.create_all(bind=engine)
 

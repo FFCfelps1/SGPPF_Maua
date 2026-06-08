@@ -9,6 +9,7 @@ import {
   Library,
   Users,
 } from "lucide-react";
+import { DashboardCharts } from "./_components/dashboard-charts";
 import { getDashboardKpis } from "@/lib/data/kpis";
 import { KpiCard } from "./_components/kpi-card";
 import { labels } from "@/lib/labels";
@@ -123,6 +124,14 @@ export default async function DashboardPage() {
             tone="green"
           />
         </div>
+      </section>
+
+      <section className="space-y-4">
+        <SectionHeading
+          title="Análise de Dados"
+          description="Visualização gráfica do desempenho e distribuições."
+        />
+        <DashboardCharts k={k} />
       </section>
 
       <div className="grid gap-6 xl:grid-cols-[1.25fr_1fr]">

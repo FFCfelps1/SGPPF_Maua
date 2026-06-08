@@ -37,6 +37,17 @@ export function ProjectForm({
           <Field name="title" label={labels.project.title} required error={state.errors?.title}>
             <Input id="title" name="title" defaultValue={d.title ?? ""} required />
           </Field>
+          <Field name="description" label={labels.project.description} error={state.errors?.description}>
+            <Input id="description" name="description" defaultValue={d.description ?? ""} />
+          </Field>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <Field name="department" label={labels.researcher.department} error={state.errors?.department}>
+              <Input id="department" name="department" defaultValue={d.department ?? ""} />
+            </Field>
+            <Field name="unit" label={labels.researcher.unit} error={state.errors?.unit}>
+              <Input id="unit" name="unit" defaultValue={d.unit ?? ""} />
+            </Field>
+          </div>
           <div className="grid gap-4 sm:grid-cols-2">
             <Field name="code" label={labels.project.code} error={state.errors?.code}>
               <Input id="code" name="code" defaultValue={d.code ?? ""} />

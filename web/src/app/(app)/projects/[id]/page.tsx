@@ -65,6 +65,25 @@ export default async function ProjectDetailPage({
         </p>
       ) : null}
 
+      <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-muted-foreground">
+        {project.department ? (
+          <p>
+            <span className="font-medium text-foreground">{labels.researcher.department}:</span> {project.department}
+          </p>
+        ) : null}
+        {project.unit ? (
+          <p>
+            <span className="font-medium text-foreground">{labels.researcher.unit}:</span> {project.unit}
+          </p>
+        ) : null}
+      </div>
+
+      {project.description ? (
+        <p className="text-sm text-muted-foreground">
+          {project.description}
+        </p>
+      ) : null}
+
       <Card>
         <CardHeader>
           <CardTitle>{labels.project.funding}</CardTitle>

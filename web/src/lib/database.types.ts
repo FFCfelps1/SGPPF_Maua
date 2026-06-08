@@ -7,6 +7,11 @@ export type Json =
   | Json[]
 
 export type Database = {
+  // Allows to automatically instantiate createClient with right options
+  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
+  __InternalSupabase: {
+    PostgrestVersion: "14.5"
+  }
   graphql_public: {
     Tables: {
       [_ in never]: never
@@ -165,6 +170,7 @@ export type Database = {
           affiliation_date: string | null
           area_of_expertise: string | null
           created_at: string
+          department: string | null
           email: string
           employment_type: string | null
           full_name: string
@@ -174,13 +180,16 @@ export type Database = {
           lattes_url: string | null
           orcid: string | null
           position: string | null
+          research_gate_id: string | null
           role: Database["public"]["Enums"]["app_role"]
+          unit: string | null
           updated_at: string
         }
         Insert: {
           affiliation_date?: string | null
           area_of_expertise?: string | null
           created_at?: string
+          department?: string | null
           email: string
           employment_type?: string | null
           full_name: string
@@ -190,13 +199,16 @@ export type Database = {
           lattes_url?: string | null
           orcid?: string | null
           position?: string | null
+          research_gate_id?: string | null
           role?: Database["public"]["Enums"]["app_role"]
+          unit?: string | null
           updated_at?: string
         }
         Update: {
           affiliation_date?: string | null
           area_of_expertise?: string | null
           created_at?: string
+          department?: string | null
           email?: string
           employment_type?: string | null
           full_name?: string
@@ -206,15 +218,57 @@ export type Database = {
           lattes_url?: string | null
           orcid?: string | null
           position?: string | null
+          research_gate_id?: string | null
           role?: Database["public"]["Enums"]["app_role"]
+          unit?: string | null
           updated_at?: string
         }
         Relationships: []
+      }
+      project_members: {
+        Row: {
+          created_at: string
+          id: number
+          profile_id: string
+          project_id: number
+          role: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: never
+          profile_id: string
+          project_id: number
+          role?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: never
+          profile_id?: string
+          project_id?: number
+          role?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_members_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "project_members_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       projects: {
         Row: {
           code: string | null
           created_at: string
+          description: string | null
           end_date: string | null
           id: number
           lead_id: string
@@ -227,6 +281,7 @@ export type Database = {
         Insert: {
           code?: string | null
           created_at?: string
+          description?: string | null
           end_date?: string | null
           id?: never
           lead_id: string
@@ -239,6 +294,7 @@ export type Database = {
         Update: {
           code?: string | null
           created_at?: string
+          description?: string | null
           end_date?: string | null
           id?: never
           lead_id?: string
@@ -598,4 +654,3 @@ export const Constants = {
     },
   },
 } as const
-

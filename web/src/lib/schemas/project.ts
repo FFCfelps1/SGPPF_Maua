@@ -15,6 +15,9 @@ const optText = z.preprocess(emptyToNull, z.string().nullable());
 const base = {
   title: z.string().trim().min(2, labels.errors.required),
   code: optText,
+  description: optText,
+  department: optText,
+  unit: optText,
   modality: optText,
   status: z.enum(PROJECT_STATUS),
   start_date: optText,

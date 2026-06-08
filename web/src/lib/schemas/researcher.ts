@@ -12,11 +12,14 @@ const optionalText = z
 export const researcherUpdateSchema = z.object({
   id: z.uuid(),
   full_name: z.string().trim().min(2, labels.errors.required),
+  department: optionalText,
+  unit: optionalText,
   position: optionalText,
   area_of_expertise: optionalText,
   orcid: optionalText,
   lattes_url: optionalText,
   google_scholar_id: optionalText,
+  research_gate_id: optionalText,
   employment_type: optionalText,
   affiliation_date: optionalText,
 });

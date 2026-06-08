@@ -77,11 +77,14 @@ export default async function ResearcherDetailPage({
 
 function ReadOnlyProfile({ profile }: { profile: Profile }) {
   const rows: [string, string | null][] = [
+    [labels.researcher.department, profile.department],
+    [labels.researcher.unit, profile.unit],
     [labels.researcher.position, profile.position],
     [labels.researcher.area, profile.area_of_expertise],
     [labels.researcher.orcid, profile.orcid],
     [labels.researcher.lattes, profile.lattes_url],
     [labels.researcher.scholar, profile.google_scholar_id],
+    [labels.researcher.researchGate, profile.research_gate_id],
     [labels.researcher.employmentType, profile.employment_type],
     [labels.researcher.affiliationDate, profile.affiliation_date],
   ];

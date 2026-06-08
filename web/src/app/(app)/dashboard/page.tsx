@@ -10,7 +10,8 @@ import {
   Users,
 } from "lucide-react";
 import { DashboardCharts } from "./_components/dashboard-charts";
-import { getDashboardKpis } from "@/lib/data/kpis";
+import { DashboardFilters } from "./_components/dashboard-filters";
+import { getDashboardKpis, getDepartments } from "@/lib/data/kpis";
 import { KpiCard } from "./_components/kpi-card";
 import { labels } from "@/lib/labels";
 import { getMyPermissions } from "@/lib/permissions";
@@ -20,8 +21,16 @@ import { cn } from "@/lib/utils";
 const fmtBRL = (n: number) =>
   new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(n);
 
-export default async function DashboardPage() {
-  const k = await getDashboardKpis();
+export const dynamic = "force-dynamic";
+
+export default async function DashboardPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ department?: string }>;
+}) {
+  const { department } = await searchParams;
+  const k = await getDashboardKpis(department);
+  const departments = await getDepartments();
   const permissions = await getMyPermissions();
 
   const recentShare = percentage(k.recent_publications, k.total_publications);
@@ -77,10 +86,13 @@ export default async function DashboardPage() {
       </section>
 
       <section className="space-y-4">
-        <SectionHeading
-          title={labels.dashboard.overview}
-          description={labels.dashboard.overviewDescription}
-        />
+        <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
+          <SectionHeading
+            title={labels.dashboard.overview}
+            description={labels.dashboard.overviewDescription}
+          />
+          <DashboardFilters departments={departments} />
+        </div>
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
           <KpiCard
             label={labels.dashboard.publicationsTotal}

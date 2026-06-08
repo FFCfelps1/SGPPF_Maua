@@ -7,18 +7,65 @@ export type DashboardKpis = {
   completed_advisings: number;
   active_funded_projects: number;
   funds_received: number;
+  projects_by_dept: { label: string; value: number }[];
+  researchers_by_dept: { label: string; value: number }[];
+  publications_by_dept: { label: string; value: number }[];
+  advisings_by_dept: { label: string; value: number }[];
 };
 
-/** Reads the RLS-respecting dashboard_kpis view. Zero-safe (honest empty state). */
-export async function getDashboardKpis(): Promise<DashboardKpis> {
+/** Reads the RLS-respecting dashboard stats via RPC. Zero-safe (honest empty state). */
+export async function getDashboardKpis(department?: string): Promise<DashboardKpis> {
   const supabase = await createClient();
-  const { data } = await supabase.from("dashboard_kpis").select("*").single();
+  const { data, error } = await supabase.rpc("get_dashboard_stats", {
+    p_department: department || null,
+  });
+  
+  if (error) {
+    console.error("Error fetching dashboard stats:", error);
+    return {
+      total_publications: 0,
+      recent_publications: 0,
+      total_advisings: 0,
+      completed_advisings: 0,
+      active_funded_projects: 0,
+      funds_received: 0,
+      projects_by_dept: [],
+      researchers_by_dept: [],
+      publications_by_dept: [],
+      advisings_by_dept: [],
+    };
+  }
+
+  const stats = data[0] || {};
   return {
-    total_publications: data?.total_publications ?? 0,
-    recent_publications: data?.recent_publications ?? 0,
-    total_advisings: data?.total_advisings ?? 0,
-    completed_advisings: data?.completed_advisings ?? 0,
-    active_funded_projects: data?.active_funded_projects ?? 0,
-    funds_received: data?.funds_received ?? 0,
+    total_publications: Number(stats.total_publications ?? 0),
+    recent_publications: Number(stats.recent_publications ?? 0),
+    total_advisings: Number(stats.total_advisings ?? 0),
+    completed_advisings: Number(stats.completed_advisings ?? 0),
+    active_funded_projects: Number(stats.active_funded_projects ?? 0),
+    funds_received: Number(stats.funds_received ?? 0),
+    projects_by_dept: stats.projects_by_dept ?? [],
+    researchers_by_dept: stats.researchers_by_dept ?? [],
+    publications_by_dept: stats.publications_by_dept ?? [],
+    advisings_by_dept: stats.advisings_by_dept ?? [],
   };
+}
+
+export async function getDepartments(): Promise<string[]> {
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("profiles")
+    .select("department")
+    .not("department", "is", null);
+  
+  const depts = new Set((data ?? []).map((d) => d.department!));
+  
+  const { data: projData } = await supabase
+    .from("projects")
+    .select("department")
+    .not("department", "is", null);
+  
+  (projData ?? []).forEach((d) => depts.add(d.department!));
+  
+  return Array.from(depts).sort();
 }

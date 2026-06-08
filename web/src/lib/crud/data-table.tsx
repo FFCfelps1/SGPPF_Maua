@@ -73,8 +73,8 @@ export function DataTable<Row extends Record<string, unknown>>({
 
   return (
     <div className="space-y-4">
-      <div className="rounded-lg border">
-        <Table>
+      <div className="overflow-x-auto rounded-xl border bg-card shadow-xs">
+        <Table className="min-w-[42rem]">
           <TableHeader>
             <TableRow>
               {columns.map((col) => {

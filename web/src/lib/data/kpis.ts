@@ -1,5 +1,10 @@
 import { createClient } from "@/lib/supabase/server";
 
+export type DepartmentMetric = {
+  label: string;
+  value: number;
+};
+
 export type DashboardKpis = {
   total_publications: number;
   recent_publications: number;
@@ -7,11 +12,30 @@ export type DashboardKpis = {
   completed_advisings: number;
   active_funded_projects: number;
   funds_received: number;
-  projects_by_dept: { label: string; value: number }[];
-  researchers_by_dept: { label: string; value: number }[];
-  publications_by_dept: { label: string; value: number }[];
-  advisings_by_dept: { label: string; value: number }[];
+  projects_by_dept: DepartmentMetric[];
+  researchers_by_dept: DepartmentMetric[];
+  publications_by_dept: DepartmentMetric[];
+  advisings_by_dept: DepartmentMetric[];
 };
+
+function departmentMetrics(value: unknown): DepartmentMetric[] {
+  if (!Array.isArray(value)) return [];
+
+  return value.flatMap((entry) => {
+    if (
+      typeof entry !== "object" ||
+      entry === null ||
+      !("label" in entry) ||
+      !("value" in entry)
+    ) {
+      return [];
+    }
+
+    const label = String(entry.label ?? "");
+    const metricValue = Number(entry.value);
+    return Number.isFinite(metricValue) ? [{ label, value: metricValue }] : [];
+  });
+}
 
 /** Reads the RLS-respecting dashboard stats via RPC. Zero-safe (honest empty state). */
 export async function getDashboardKpis(department?: string): Promise<DashboardKpis> {
@@ -44,10 +68,10 @@ export async function getDashboardKpis(department?: string): Promise<DashboardKp
     completed_advisings: Number(stats.completed_advisings ?? 0),
     active_funded_projects: Number(stats.active_funded_projects ?? 0),
     funds_received: Number(stats.funds_received ?? 0),
-    projects_by_dept: (stats.projects_by_dept as any) ?? [],
-    researchers_by_dept: (stats.researchers_by_dept as any) ?? [],
-    publications_by_dept: (stats.publications_by_dept as any) ?? [],
-    advisings_by_dept: (stats.advisings_by_dept as any) ?? [],
+    projects_by_dept: departmentMetrics(stats.projects_by_dept),
+    researchers_by_dept: departmentMetrics(stats.researchers_by_dept),
+    publications_by_dept: departmentMetrics(stats.publications_by_dept),
+    advisings_by_dept: departmentMetrics(stats.advisings_by_dept),
   };
 }
 

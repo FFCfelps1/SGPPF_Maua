@@ -1,14 +1,6 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/button"; // I should check if Select is available or use a standard select
-import { labels } from "@/lib/labels";
 
 export function DashboardFilters({ departments }: { departments: string[] }) {
   const router = useRouter();

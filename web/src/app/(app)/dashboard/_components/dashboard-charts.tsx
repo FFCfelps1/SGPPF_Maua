@@ -45,15 +45,21 @@ export function DashboardCharts({ k }: { k: any }) {
     selectedMetric === "publications" ? k.publications_by_dept :
     k.advisings_by_dept;
 
-  const deptData = (rawData ?? [])
-    .filter((d: any) => d.value > 0)
-    .map((d: any, i: number) => ({
+  interface DeptChartData {
+    label: string;
+    value: number;
+    fill: string;
+  }
+
+  const deptData: DeptChartData[] = (rawData ?? [])
+    .filter((d: { value: number }) => d.value > 0)
+    .map((d: { label: string; value: number }, i: number) => ({
       label: d.label || "Indefinido",
       value: d.value,
       fill: `hsl(var(--chart-${(i % 5) + 1}))`,
     }));
 
-  const deptConfig = deptData.reduce((acc: any, d: any) => {
+  const deptConfig = deptData.reduce((acc: any, d: DeptChartData) => {
     acc[d.label] = { label: d.label, color: d.fill };
     return acc;
   }, {} as ChartConfig);
@@ -170,7 +176,7 @@ export function DashboardCharts({ k }: { k: any }) {
                 />
                 <ChartTooltip content={<ChartTooltipContent hideLabel />} />
                 <Bar dataKey="value" radius={[0, 4, 4, 0]} barSize={32}>
-                  {deptData.map((entry, index) => (
+                  {deptData.map((entry: DeptChartData, index: number) => (
                     <Cell key={`cell-${index}`} fill={entry.fill} />
                   ))}
                 </Bar>

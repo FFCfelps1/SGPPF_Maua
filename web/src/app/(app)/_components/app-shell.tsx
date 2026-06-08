@@ -21,6 +21,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { labels } from "@/lib/labels";
 import { signOut } from "@/app/(auth)/_actions";
+import { ModeToggle } from "@/components/mode-toggle";
 
 const ITEMS = [
   {
@@ -292,16 +293,19 @@ export function AppShell({
               </p>
             </div>
 
-            <div className="ml-auto hidden items-center gap-3 sm:flex lg:hidden">
-              <span className="max-w-52 truncate text-sm text-muted-foreground">
-                {email}
-              </span>
-              <form action={signOut}>
-                <Button type="submit" variant="outline" size="sm">
-                  <LogOut />
-                  {labels.nav.signOut}
-                </Button>
-              </form>
+            <div className="ml-auto flex items-center gap-3">
+              <ModeToggle />
+              <div className="hidden items-center gap-3 sm:flex lg:hidden">
+                <span className="max-w-52 truncate text-sm text-muted-foreground">
+                  {email}
+                </span>
+                <form action={signOut}>
+                  <Button type="submit" variant="outline" size="sm">
+                    <LogOut />
+                    {labels.nav.signOut}
+                  </Button>
+                </form>
+              </div>
             </div>
           </div>
         </header>

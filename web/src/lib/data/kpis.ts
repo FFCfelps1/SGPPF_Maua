@@ -17,7 +17,7 @@ export type DashboardKpis = {
 export async function getDashboardKpis(department?: string): Promise<DashboardKpis> {
   const supabase = await createClient();
   const { data, error } = await supabase.rpc("get_dashboard_stats", {
-    p_department: department || null,
+    p_department: department || undefined,
   });
   
   if (error) {
@@ -44,10 +44,10 @@ export async function getDashboardKpis(department?: string): Promise<DashboardKp
     completed_advisings: Number(stats.completed_advisings ?? 0),
     active_funded_projects: Number(stats.active_funded_projects ?? 0),
     funds_received: Number(stats.funds_received ?? 0),
-    projects_by_dept: stats.projects_by_dept ?? [],
-    researchers_by_dept: stats.researchers_by_dept ?? [],
-    publications_by_dept: stats.publications_by_dept ?? [],
-    advisings_by_dept: stats.advisings_by_dept ?? [],
+    projects_by_dept: (stats.projects_by_dept as any) ?? [],
+    researchers_by_dept: (stats.researchers_by_dept as any) ?? [],
+    publications_by_dept: (stats.publications_by_dept as any) ?? [],
+    advisings_by_dept: (stats.advisings_by_dept as any) ?? [],
   };
 }
 

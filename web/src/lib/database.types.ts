@@ -268,6 +268,7 @@ export type Database = {
         Row: {
           code: string | null
           created_at: string
+          department: string | null
           description: string | null
           end_date: string | null
           id: number
@@ -276,11 +277,13 @@ export type Database = {
           start_date: string | null
           status: Database["public"]["Enums"]["project_status"]
           title: string
+          unit: string | null
           updated_at: string
         }
         Insert: {
           code?: string | null
           created_at?: string
+          department?: string | null
           description?: string | null
           end_date?: string | null
           id?: never
@@ -289,11 +292,13 @@ export type Database = {
           start_date?: string | null
           status?: Database["public"]["Enums"]["project_status"]
           title: string
+          unit?: string | null
           updated_at?: string
         }
         Update: {
           code?: string | null
           created_at?: string
+          department?: string | null
           description?: string | null
           end_date?: string | null
           id?: never
@@ -302,6 +307,7 @@ export type Database = {
           start_date?: string | null
           status?: Database["public"]["Enums"]["project_status"]
           title?: string
+          unit?: string | null
           updated_at?: string
         }
         Relationships: [
@@ -424,17 +430,7 @@ export type Database = {
       }
     }
     Views: {
-      dashboard_kpis: {
-        Row: {
-          active_funded_projects: number | null
-          completed_advisings: number | null
-          funds_received: number | null
-          recent_publications: number | null
-          total_advisings: number | null
-          total_publications: number | null
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Functions: {
       authorize: {
@@ -444,6 +440,21 @@ export type Database = {
         Returns: boolean
       }
       custom_access_token_hook: { Args: { event: Json }; Returns: Json }
+      get_dashboard_stats: {
+        Args: { p_department?: string }
+        Returns: {
+          active_funded_projects: number
+          advisings_by_dept: Json
+          completed_advisings: number
+          funds_received: number
+          projects_by_dept: Json
+          publications_by_dept: Json
+          recent_publications: number
+          researchers_by_dept: Json
+          total_advisings: number
+          total_publications: number
+        }[]
+      }
       my_permissions: {
         Args: never
         Returns: Database["public"]["Enums"]["app_permission"][]

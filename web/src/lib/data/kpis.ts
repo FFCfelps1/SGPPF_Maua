@@ -16,6 +16,7 @@ export type DashboardKpis = {
   researchers_by_dept: DepartmentMetric[];
   publications_by_dept: DepartmentMetric[];
   advisings_by_dept: DepartmentMetric[];
+  submissions_by_status: { label: string; value: number }[];
 };
 
 function departmentMetrics(value: unknown): DepartmentMetric[] {
@@ -57,8 +58,24 @@ export async function getDashboardKpis(department?: string): Promise<DashboardKp
       researchers_by_dept: [],
       publications_by_dept: [],
       advisings_by_dept: [],
+      submissions_by_status: [],
     };
   }
+
+  // Fetch submissions stats separately as it's not yet in the main RPC
+  const { data: subData } = await supabase
+    .from("project_submissions")
+    .select("status");
+  
+  const subStats = (subData ?? []).reduce((acc, curr) => {
+    acc[curr.status] = (acc[curr.status] || 0) + 1;
+    return acc;
+  }, {} as Record<string, number>);
+
+  const submissions_by_status = Object.entries(subStats).map(([label, value]) => ({
+    label,
+    value
+  }));
 
   const stats = data[0] || {};
   return {
@@ -72,6 +89,7 @@ export async function getDashboardKpis(department?: string): Promise<DashboardKp
     researchers_by_dept: departmentMetrics(stats.researchers_by_dept),
     publications_by_dept: departmentMetrics(stats.publications_by_dept),
     advisings_by_dept: departmentMetrics(stats.advisings_by_dept),
+    submissions_by_status,
   };
 }
 

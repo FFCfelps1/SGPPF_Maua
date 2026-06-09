@@ -5,11 +5,14 @@ import { ProjectForm } from "../_components/project-form";
 import { FundingTab } from "../_components/funding-tab";
 import { deleteProject, updateProject } from "../_actions";
 import { ConfirmDialog } from "@/lib/crud/confirm-dialog";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { labels } from "@/lib/labels";
 import type { Database } from "@/lib/database.types";
+import { RiArrowLeftLine } from "@remixicon/react";
+import Link from "next/link";
+import { cn } from "@/lib/utils";
 
 type Funding = Database["public"]["Tables"]["funding"]["Row"];
 
@@ -40,6 +43,13 @@ export default async function ProjectDetailPage({
     <div className="space-y-6">
       <div className="flex items-center justify-between gap-4">
         <div className="flex items-center gap-3">
+          <Link 
+            href="/projects" 
+            className={cn(buttonVariants({ variant: "ghost", size: "icon-sm" }))}
+            title="Voltar"
+          >
+            <RiArrowLeftLine className="size-4" />
+          </Link>
           <h1 className="text-2xl font-semibold tracking-tight">
             {project.title}
           </h1>

@@ -8,6 +8,7 @@ import {
   BookOpenText,
   ChevronLeft,
   ChevronRight,
+  FileUp,
   FolderKanban,
   GraduationCap,
   LayoutDashboard,
@@ -44,6 +45,13 @@ const ITEMS = [
     description: labels.shell.descriptions.projects,
     permission: "projects:read",
     icon: FolderKanban,
+  },
+  {
+    href: "/submissions",
+    label: labels.submission.title,
+    description: "Submissão e aprovação interna",
+    permission: "submissions:read",
+    icon: FileUp,
   },
   {
     href: "/publications",

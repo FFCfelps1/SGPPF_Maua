@@ -264,6 +264,89 @@ export type Database = {
           },
         ]
       }
+      project_submissions: {
+        Row: {
+          abstract: string | null
+          cp_approval_at: string | null
+          created_at: string
+          department: string | null
+          dept_approval_at: string | null
+          estimated_budget: number | null
+          funding_agency: string | null
+          funding_agency_status: Database["public"]["Enums"]["agency_project_status"] | null
+          id: number
+          internal_feedback: string | null
+          knowledge_area: string | null
+          maua_approval_at: string | null
+          methodology: string | null
+          modality: string | null
+          objectives: string | null
+          partners: string | null
+          research_duration: string | null
+          researcher_id: string
+          status: Database["public"]["Enums"]["submission_status"]
+          title: string
+          unit: string | null
+          updated_at: string
+        }
+        Insert: {
+          abstract?: string | null
+          cp_approval_at?: string | null
+          created_at?: string
+          department?: string | null
+          dept_approval_at?: string | null
+          estimated_budget?: number | null
+          funding_agency?: string | null
+          funding_agency_status?: Database["public"]["Enums"]["agency_project_status"] | null
+          id?: never
+          internal_feedback?: string | null
+          knowledge_area?: string | null
+          maua_approval_at?: string | null
+          methodology?: string | null
+          modality?: string | null
+          objectives?: string | null
+          partners?: string | null
+          research_duration?: string | null
+          researcher_id: string
+          status?: Database["public"]["Enums"]["submission_status"]
+          title: string
+          unit?: string | null
+          updated_at?: string
+        }
+        Update: {
+          abstract?: string | null
+          cp_approval_at?: string | null
+          created_at?: string
+          department?: string | null
+          dept_approval_at?: string | null
+          estimated_budget?: number | null
+          funding_agency?: string | null
+          funding_agency_status?: Database["public"]["Enums"]["agency_project_status"] | null
+          id?: never
+          internal_feedback?: string | null
+          knowledge_area?: string | null
+          maua_approval_at?: string | null
+          methodology?: string | null
+          modality?: string | null
+          objectives?: string | null
+          partners?: string | null
+          research_duration?: string | null
+          researcher_id?: string
+          status?: Database["public"]["Enums"]["submission_status"]
+          title?: string
+          unit?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_submissions_researcher_id_fkey"
+            columns: ["researcher_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       projects: {
         Row: {
           code: string | null
@@ -428,6 +511,45 @@ export type Database = {
         }
         Relationships: []
       }
+      submission_members: {
+        Row: {
+          created_at: string
+          id: number
+          profile_id: string
+          role: string | null
+          submission_id: number
+        }
+        Insert: {
+          created_at?: string
+          id?: never
+          profile_id: string
+          role?: string | null
+          submission_id: number
+        }
+        Update: {
+          created_at?: string
+          id?: never
+          profile_id?: string
+          role?: string | null
+          submission_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "submission_members_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "submission_members_submission_id_fkey"
+            columns: ["submission_id"]
+            isOneToOne: false
+            referencedRelation: "project_submissions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -485,7 +607,10 @@ export type Database = {
         | "funding:write"
         | "funding:delete"
         | "users:manage"
-      app_role: "admin" | "researcher" | "consultant"
+        | "submissions:read"
+        | "submissions:write"
+        | "submissions:approve"
+      app_role: "admin" | "researcher" | "consultant" | "dept_manager" | "cp_manager" | "maua_manager"
       funding_status: "approved" | "in_execution" | "completed" | "cancelled"
       project_status: "planned" | "in_progress" | "completed" | "cancelled"
       publication_type:
@@ -495,6 +620,21 @@ export type Database = {
         | "book_chapter"
         | "technical_report"
         | "patent"
+      submission_status:
+        | "draft"
+        | "submitted"
+        | "approved_dept"
+        | "approved_cp"
+        | "approved_maua"
+        | "rejected"
+      agency_project_status:
+        | "em_analise"
+        | "pendente"
+        | "aprovado"
+        | "em_execucao"
+        | "concluido"
+        | "rejeitado"
+        | "cancelado"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -650,8 +790,11 @@ export const Constants = {
         "funding:write",
         "funding:delete",
         "users:manage",
+        "submissions:read",
+        "submissions:write",
+        "submissions:approve",
       ],
-      app_role: ["admin", "researcher", "consultant"],
+      app_role: ["admin", "researcher", "consultant", "dept_manager", "cp_manager", "maua_manager"],
       funding_status: ["approved", "in_execution", "completed", "cancelled"],
       project_status: ["planned", "in_progress", "completed", "cancelled"],
       publication_type: [
@@ -662,6 +805,24 @@ export const Constants = {
         "technical_report",
         "patent",
       ],
+      submission_status: [
+        "draft",
+        "submitted",
+        "approved_dept",
+        "approved_cp",
+        "approved_maua",
+        "rejected",
+      ],
+      agency_project_status: [
+        "em_analise",
+        "pendente",
+        "aprovado",
+        "em_execucao",
+        "concluido",
+        "rejeitado",
+        "cancelado",
+      ],
     },
   },
-} as const
+} as const;
+

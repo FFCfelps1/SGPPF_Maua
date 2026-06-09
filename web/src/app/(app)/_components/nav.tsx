@@ -11,6 +11,7 @@ const ITEMS: { href: string; label: string; permission: string | null }[] = [
   { href: "/dashboard", label: labels.nav.dashboard, permission: null },
   { href: "/researchers", label: labels.nav.researchers, permission: "researchers:read" },
   { href: "/projects", label: labels.nav.projects, permission: "projects:read" },
+  { href: "/submissions", label: labels.submission.title, permission: "submissions:read" },
   { href: "/publications", label: labels.nav.publications, permission: "publications:read" },
   { href: "/advisings", label: labels.nav.advisings, permission: "advisings:read" },
   { href: "/admin", label: labels.nav.admin, permission: "users:manage" },

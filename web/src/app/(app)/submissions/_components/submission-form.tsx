@@ -1,0 +1,193 @@
+"use client";
+
+import { useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
+import { EntityForm } from "@/lib/crud/entity-form";
+import { Field } from "@/lib/crud/field";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { labels } from "@/lib/labels";
+import { searchResearchers } from "../_actions";
+import { RiUserAddLine, RiDeleteBinLine, RiSearchLine } from "@remixicon/react";
+import type { ActionState } from "@/lib/crud/action";
+import type { Database } from "@/lib/database.types";
+
+type Submission = Database["public"]["Tables"]["project_submissions"]["Row"];
+type Action = (state: ActionState, formData: FormData) => Promise<ActionState>;
+
+export function SubmissionForm({
+  action,
+  defaults,
+  afterSuccess = "refresh",
+}: {
+  action: Action;
+  defaults?: Partial<Submission>;
+  afterSuccess?: "refresh" | string;
+}) {
+  const router = useRouter();
+  const d = defaults ?? {};
+  
+  // Local state for members during creation (only for 'new' mode)
+  const [selectedMembers, setSelectedMembers] = useState<{id: string, name: string}[]>([]);
+  const [query, setQuery] = useState("");
+  const [results, setResults] = useState<{ id: string; full_name: string; email: string }[]>([]);
+  const [pending, startTransition] = useTransition();
+
+  const isNew = !d.id;
+
+  async function handleSearch() {
+    if (query.length < 2) return;
+    const data = await searchResearchers(query);
+    setResults(data || []);
+  }
+
+  const onSuccess = () =>
+    afterSuccess === "refresh" ? router.refresh() : router.push(afterSuccess);
+
+  return (
+    <EntityForm action={action} onSuccess={onSuccess}>
+      {(state) => (
+        <>
+          {d.id ? <input type="hidden" name="id" value={d.id} /> : null}
+          
+          {/* Hidden input to pass member IDs to the action */}
+          {isNew && (
+            <input 
+              type="hidden" 
+              name="_member_ids" 
+              value={selectedMembers.map(m => m.id).join(",")} 
+            />
+          )}
+
+          <Field name="title" label={labels.submission.projectTitle} required error={state.errors?.title}>
+            <Input id="title" name="title" defaultValue={d.title ?? ""} required />
+          </Field>
+          
+          <Field name="abstract" label={labels.submission.abstract} error={state.errors?.abstract}>
+            <textarea
+              id="abstract"
+              name="abstract"
+              defaultValue={d.abstract ?? ""}
+              className="flex min-h-[100px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-xs outline-none focus-visible:ring-2"
+            />
+          </Field>
+
+          <Field name="objectives" label={labels.submission.objectives} error={state.errors?.objectives}>
+            <textarea
+              id="objectives"
+              name="objectives"
+              defaultValue={d.objectives ?? ""}
+              className="flex min-h-[100px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-xs outline-none focus-visible:ring-2"
+            />
+          </Field>
+
+          <Field name="methodology" label={labels.submission.methodology} error={state.errors?.methodology}>
+            <textarea
+              id="methodology"
+              name="methodology"
+              defaultValue={d.methodology ?? ""}
+              className="flex min-h-[150px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-xs outline-none focus-visible:ring-2"
+            />
+          </Field>
+
+          <div className="grid gap-4 sm:grid-cols-2">
+            <Field name="estimated_budget" label={labels.submission.budget} error={state.errors?.estimated_budget}>
+              <Input
+                id="estimated_budget"
+                name="estimated_budget"
+                type="number"
+                step="0.01"
+                defaultValue={d.estimated_budget?.toString() ?? "0"}
+              />
+            </Field>
+            <Field name="funding_agency" label={labels.submission.agency} error={state.errors?.funding_agency}>
+              <Input id="funding_agency" name="funding_agency" defaultValue={d.funding_agency ?? ""} />
+            </Field>
+            <Field name="modality" label={labels.submission.modality} error={state.errors?.modality}>
+              <Input id="modality" name="modality" defaultValue={d.modality ?? ""} />
+            </Field>
+            <Field name="knowledge_area" label={labels.submission.knowledgeArea} error={state.errors?.knowledge_area}>
+              <Input id="knowledge_area" name="knowledge_area" defaultValue={d.knowledge_area ?? ""} />
+            </Field>
+            <Field name="research_duration" label={labels.submission.researchDuration} error={state.errors?.research_duration}>
+              <Input id="research_duration" name="research_duration" defaultValue={d.research_duration ?? ""} />
+            </Field>
+            <Field name="department" label={labels.submission.department} error={state.errors?.department}>
+              <Input id="department" name="department" defaultValue={d.department ?? ""} />
+            </Field>
+            <Field name="unit" label={labels.submission.unit} error={state.errors?.unit}>
+              <Input id="unit" name="unit" defaultValue={d.unit ?? ""} />
+            </Field>
+          </div>
+          <Field name="partners" label={labels.submission.partners} error={state.errors?.partners}>
+            <Input id="partners" name="partners" defaultValue={d.partners ?? ""} />
+          </Field>
+
+          {isNew && (
+            <div className="space-y-4 pt-4 border-t">
+              <h3 className="text-sm font-medium">{labels.submission.members}</h3>
+              
+              <div className="flex gap-2">
+                <Input
+                  placeholder="Buscar pesquisadores para adicionar..."
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), handleSearch())}
+                />
+                <Button type="button" variant="outline" onClick={handleSearch}>
+                  <RiSearchLine className="size-4" />
+                </Button>
+              </div>
+
+              {results.length > 0 && (
+                <ul className="rounded-md border bg-muted/30 overflow-hidden">
+                  {results.map((r) => {
+                    const isSelected = selectedMembers.some((m) => m.id === r.id);
+                    return (
+                      <li key={r.id} className="flex items-center justify-between p-2 text-sm hover:bg-muted">
+                        <span>{r.full_name} ({r.email})</span>
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="ghost"
+                          disabled={isSelected}
+                          onClick={() => {
+                            setSelectedMembers([...selectedMembers, { id: r.id, name: r.full_name }]);
+                            setResults([]);
+                            setQuery("");
+                          }}
+                        >
+                          {isSelected ? "Selecionado" : <RiUserAddLine className="size-4" />}
+                        </Button>
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
+
+              {selectedMembers.length > 0 && (
+                <div className="flex flex-wrap gap-2">
+                  {selectedMembers.map((m) => (
+                    <Badge key={m.id} variant="secondary" className="pl-3 pr-1 py-1 gap-1">
+                      {m.name}
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon-xs"
+                        className="h-4 w-4 p-0 hover:bg-transparent"
+                        onClick={() => setSelectedMembers(selectedMembers.filter(sm => sm.id !== m.id))}
+                      >
+                        <RiDeleteBinLine className="size-3" />
+                      </Button>
+                    </Badge>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+        </>
+      )}
+    </EntityForm>
+  );
+}

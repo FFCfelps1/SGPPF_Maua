@@ -1,40 +1,37 @@
-import { AdvisingForm } from "../_components/advising-form";
-import { createAdvising } from "../_actions";
-import { loadAdvisingOptions } from "../_data";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { SubmissionForm } from "../_components/submission-form";
+import { createSubmission } from "../_actions";
 import { labels } from "@/lib/labels";
 import { buttonVariants } from "@/components/ui/button";
 import { RiArrowLeftLine } from "@remixicon/react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
-export default async function NewAdvisingPage() {
-  const { researchers, projects } = await loadAdvisingOptions();
+export default function NewSubmissionPage() {
   return (
-    <div className="max-w-2xl space-y-6">
+    <div className="mx-auto max-w-4xl space-y-6">
       <div className="flex items-center gap-4">
         <Link 
-          href="/advisings" 
+          href="/submissions" 
           className={cn(buttonVariants({ variant: "ghost", size: "icon-sm" }))}
           title="Voltar"
         >
           <RiArrowLeftLine className="size-4" />
         </Link>
-        <h1 className="text-2xl font-semibold tracking-tight">
-          {labels.nav.advisings}
-        </h1>
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">{labels.submission.new}</h1>
+          <p className="text-muted-foreground">
+            Preencha os dados da proposta seguindo as diretrizes da agência de fomento.
+          </p>
+        </div>
       </div>
+
       <Card>
         <CardHeader>
-          <CardTitle>{labels.actions.create}</CardTitle>
+          <CardTitle>Dados da Proposta</CardTitle>
         </CardHeader>
         <CardContent>
-          <AdvisingForm
-            action={createAdvising}
-            afterSuccess="/advisings"
-            researchers={researchers}
-            projects={projects}
-          />
+          <SubmissionForm action={createSubmission} afterSuccess="/submissions" />
         </CardContent>
       </Card>
     </div>

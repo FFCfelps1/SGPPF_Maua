@@ -11,7 +11,7 @@ import { RiUserAddLine, RiDeleteBinLine, RiSearchLine } from "@remixicon/react";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 
-export function GroupManagement({ 
+export function MemberManagement({ 
   departmentId,
   departmentName,
   members 
@@ -42,7 +42,7 @@ export function GroupManagement({
   async function onAdd(profileId: string) {
     try {
       await addResearcherToDepartment(profileId, departmentId);
-      toast.success("Pesquisador adicionado ao grupo");
+      toast.success("Pesquisador adicionado ao departamento");
       setResults(prev => prev.filter(r => r.id !== profileId));
     } catch (err) {
       toast.error("Erro ao adicionar pesquisador");
@@ -52,7 +52,7 @@ export function GroupManagement({
   async function onRemove(profileId: string) {
     try {
       await removeResearcherFromDepartment(profileId);
-      toast.success("Pesquisador removido do grupo");
+      toast.success("Pesquisador removido do departamento");
     } catch (err) {
       toast.error("Erro ao remover pesquisador");
     }
@@ -62,13 +62,13 @@ export function GroupManagement({
     <div className="grid gap-6 lg:grid-cols-2">
       <Card>
         <CardHeader>
-          <CardTitle>Membros do Grupo</CardTitle>
+          <CardTitle>Membros do Departamento</CardTitle>
           <CardDescription>Pesquisadores vinculados a {departmentName}</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
             {members.length === 0 ? (
-              <p className="text-sm text-muted-foreground py-4 text-center">Nenhum pesquisador vinculado a este grupo.</p>
+              <p className="text-sm text-muted-foreground py-4 text-center">Nenhum pesquisador vinculado a este departamento.</p>
             ) : (
               <div className="divide-y rounded-md border">
                 {members.map(member => (
@@ -96,7 +96,7 @@ export function GroupManagement({
       <Card>
         <CardHeader>
           <CardTitle>Adicionar Pesquisador</CardTitle>
-          <CardDescription>Busque pesquisadores para vincular ao grupo</CardDescription>
+          <CardDescription>Busque pesquisadores para vincular a este departamento</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex gap-2">

@@ -17,14 +17,19 @@ import type { Database } from "@/lib/database.types";
 type Submission = Database["public"]["Tables"]["project_submissions"]["Row"];
 type Action = (state: ActionState, formData: FormData) => Promise<ActionState>;
 
+const selectClass =
+  "flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs outline-none focus-visible:ring-2";
+
 export function SubmissionForm({
   action,
   defaults,
   afterSuccess = "refresh",
+  departments = [],
 }: {
   action: Action;
   defaults?: Partial<Submission>;
   afterSuccess?: "refresh" | string;
+  departments?: { id: number; name: string }[];
 }) {
   const router = useRouter();
   const d = defaults ?? {};
@@ -126,8 +131,15 @@ export function SubmissionForm({
             <Field name="research_duration" label={labels.submission.researchDuration} error={state.errors?.research_duration}>
               <Input id="research_duration" name="research_duration" defaultValue={d.research_duration ?? ""} />
             </Field>
-            <Field name="department" label={labels.submission.department} error={state.errors?.department}>
-              <Input id="department" name="department" defaultValue={d.department ?? ""} />
+            <Field name="department_id" label={labels.submission.department} error={state.errors?.department_id}>
+              <select id="department_id" name="department_id" defaultValue={d.department_id ?? ""} className={selectClass}>
+                <option value="">—</option>
+                {departments.map((dept) => (
+                  <option key={dept.id} value={dept.id}>
+                    {dept.name}
+                  </option>
+                ))}
+              </select>
             </Field>
             <Field name="unit" label={labels.submission.unit} error={state.errors?.unit}>
               <Input id="unit" name="unit" defaultValue={d.unit ?? ""} />

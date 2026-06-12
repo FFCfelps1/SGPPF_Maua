@@ -1,13 +1,20 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { SubmissionForm } from "../_components/submission-form";
 import { createSubmission } from "../_actions";
+import { createClient } from "@/lib/supabase/server";
 import { labels } from "@/lib/labels";
 import { buttonVariants } from "@/components/ui/button";
 import { RiArrowLeftLine } from "@remixicon/react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
-export default function NewSubmissionPage() {
+export default async function NewSubmissionPage() {
+  const supabase = await createClient();
+  const { data: departments } = await supabase
+    .from("departments")
+    .select("id, name")
+    .order("name");
+
   return (
     <div className="mx-auto max-w-4xl space-y-6">
       <div className="flex items-center gap-4">
@@ -31,7 +38,11 @@ export default function NewSubmissionPage() {
           <CardTitle>Dados da Proposta</CardTitle>
         </CardHeader>
         <CardContent>
-          <SubmissionForm action={createSubmission} afterSuccess="/submissions" />
+          <SubmissionForm 
+            action={createSubmission} 
+            afterSuccess="/submissions" 
+            departments={departments || []}
+          />
         </CardContent>
       </Card>
     </div>

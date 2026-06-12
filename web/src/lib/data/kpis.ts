@@ -96,18 +96,9 @@ export async function getDashboardKpis(department?: string): Promise<DashboardKp
 export async function getDepartments(): Promise<string[]> {
   const supabase = await createClient();
   const { data } = await supabase
-    .from("profiles")
-    .select("department")
-    .not("department", "is", null);
+    .from("departments")
+    .select("name")
+    .order("name");
   
-  const depts = new Set((data ?? []).map((d) => d.department!));
-  
-  const { data: projData } = await supabase
-    .from("projects")
-    .select("department")
-    .not("department", "is", null);
-  
-  (projData ?? []).forEach((d) => depts.add(d.department!));
-  
-  return Array.from(depts).sort();
+  return (data ?? []).map((d) => d.name);
 }

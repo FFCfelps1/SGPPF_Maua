@@ -28,13 +28,14 @@ export default async function SubmissionDetailsPage({
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return notFound();
 
-  const [{ data: submission }, { data: profile }] = await Promise.all([
+  const [{ data: submission }, { data: profile }, { data: departments }] = await Promise.all([
     supabase
       .from("project_submissions")
-      .select("*, profiles!researcher_id(full_name), submission_members(*, profiles(full_name, email))")
+      .select("*, profiles!researcher_id(full_name), submission_members(*, profiles(full_name, email)), departments(name)")
       .eq("id", Number(id))
       .single(),
     supabase.from("profiles").select("role").eq("id", user.id).single(),
+    supabase.from("departments").select("id, name").order("name"),
   ]);
 
   if (!submission) return notFound();
@@ -45,6 +46,7 @@ export default async function SubmissionDetailsPage({
   const canEdit = (isOwner && isDraftOrRejected) || isApprover;
 
   const members = (submission.submission_members ?? []) as any[];
+  const deptName = (submission as any).departments?.name || submission.department;
 
   return (
     <div className="grid gap-6 lg:grid-cols-3">
@@ -114,6 +116,7 @@ export default async function SubmissionDetailsPage({
                 action={updateSubmission} 
                 defaults={submission} 
                 afterSuccess="/submissions"
+                departments={departments || []}
               />
             </CardContent>
           </Card>
@@ -160,7 +163,7 @@ export default async function SubmissionDetailsPage({
                 </div>
                 <div>
                   <p className="text-sm font-medium text-muted-foreground">{labels.submission.department}</p>
-                  <p className="text-lg">{submission.department || "—"}</p>
+                  <p className="text-lg">{deptName || "—"}</p>
                 </div>
                 <div>
                   <p className="text-sm font-medium text-muted-foreground">{labels.submission.unit}</p>

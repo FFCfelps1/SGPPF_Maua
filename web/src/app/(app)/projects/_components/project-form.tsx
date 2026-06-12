@@ -25,10 +25,12 @@ export function ProjectForm({
   action,
   defaults,
   afterSuccess = "refresh",
+  departments = [],
 }: {
   action: Action;
   defaults?: Partial<Project>;
   afterSuccess?: "refresh" | string;
+  departments?: { id: number; name: string }[];
 }) {
   const router = useRouter();
   const d = defaults ?? {};
@@ -82,8 +84,15 @@ export function ProjectForm({
             <Input id="description" name="description" defaultValue={d.description ?? ""} />
           </Field>
           <div className="grid gap-4 sm:grid-cols-2">
-            <Field name="department" label={labels.researcher.department} error={state.errors?.department}>
-              <Input id="department" name="department" defaultValue={d.department ?? ""} />
+            <Field name="department_id" label={labels.researcher.department} error={state.errors?.department_id}>
+              <select id="department_id" name="department_id" defaultValue={d.department_id ?? ""} className={selectClass}>
+                <option value="">—</option>
+                {departments.map((dept) => (
+                  <option key={dept.id} value={dept.id}>
+                    {dept.name}
+                  </option>
+                ))}
+              </select>
             </Field>
             <Field name="unit" label={labels.researcher.unit} error={state.errors?.unit}>
               <Input id="unit" name="unit" defaultValue={d.unit ?? ""} />

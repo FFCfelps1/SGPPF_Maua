@@ -35,7 +35,7 @@ const base = {
   funding_agency: optText,
   modality: optText,
   knowledge_area: optText,
-  department: optText,
+  department_id: z.coerce.number().int().optional().nullable(),
   unit: optText,
   research_duration: optText,
   partners: optText,

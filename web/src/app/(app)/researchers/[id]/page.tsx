@@ -36,6 +36,21 @@ export default async function ResearcherDetailPage({
   const canEdit = profile.id === viewerId || perms.has("users:manage");
   const canDelete = perms.has("researchers:delete");
 
+  const { data: departments } = await supabase
+    .from("departments")
+    .select("id, name")
+    .order("name");
+
+  // Join department name for display
+  const { data: profileWithDept } = await supabase
+    .from("profiles")
+    .select("*, departments(name)")
+    .eq("id", id)
+    .single();
+
+  const displayProfile = profileWithDept || profile;
+  const deptName = (displayProfile as any).departments?.name || displayProfile.department;
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between gap-4">
@@ -86,9 +101,13 @@ export default async function ResearcherDetailPage({
         </CardHeader>
         <CardContent>
           {canEdit ? (
-            <ResearcherForm profile={profile} afterSuccess="/researchers" />
+            <ResearcherForm 
+              profile={profile} 
+              afterSuccess="/researchers" 
+              departments={departments || []}
+            />
           ) : (
-            <ReadOnlyProfile profile={profile} />
+            <ReadOnlyProfile profile={displayProfile} deptName={deptName} />
           )}
         </CardContent>
       </Card>
@@ -96,9 +115,9 @@ export default async function ResearcherDetailPage({
   );
 }
 
-function ReadOnlyProfile({ profile }: { profile: Profile }) {
+function ReadOnlyProfile({ profile, deptName }: { profile: Profile; deptName?: string }) {
   const rows: [string, string | null][] = [
-    [labels.researcher.department, profile.department],
+    [labels.researcher.department, deptName || null],
     [labels.researcher.unit, profile.unit],
     [labels.researcher.position, profile.position],
     [labels.researcher.area, profile.area_of_expertise],

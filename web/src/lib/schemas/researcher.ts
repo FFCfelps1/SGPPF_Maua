@@ -12,7 +12,7 @@ const optionalText = z
 export const researcherUpdateSchema = z.object({
   id: z.uuid(),
   full_name: z.string().trim().min(2, labels.errors.required),
-  department: optionalText,
+  department_id: z.coerce.number().int().optional().nullable(),
   unit: optionalText,
   position: optionalText,
   area_of_expertise: optionalText,
@@ -36,7 +36,7 @@ export const researcherCreateSchema = z.object({
     .string()
     .email(labels.errors.invalidEmail)
     .regex(/@maua\.br$/i, labels.errors.notMauaEmail),
-  department: optionalText,
+  department_id: z.coerce.number().int().optional().nullable(),
   unit: optionalText,
   position: optionalText,
   area_of_expertise: optionalText,

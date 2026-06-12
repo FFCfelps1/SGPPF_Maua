@@ -82,7 +82,7 @@ export default async function AdvisingDetailPage({
             <AdvisingForm
               action={updateAdvising}
               defaults={advising}
-              afterSuccess="refresh"
+              afterSuccess="/advisings"
               researchers={researchers}
               projects={projects}
             />

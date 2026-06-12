@@ -75,7 +75,7 @@ export default async function ResearcherDetailPage({
         </CardHeader>
         <CardContent>
           {canEdit ? (
-            <ResearcherForm profile={profile} />
+            <ResearcherForm profile={profile} afterSuccess="/researchers" />
           ) : (
             <ReadOnlyProfile profile={profile} />
           )}

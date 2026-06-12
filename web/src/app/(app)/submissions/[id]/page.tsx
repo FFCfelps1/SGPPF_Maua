@@ -100,7 +100,7 @@ export default async function SubmissionDetailsPage({
               <SubmissionForm 
                 action={updateSubmission} 
                 defaults={submission} 
-                afterSuccess={`/submissions/${id}`}
+                afterSuccess="/submissions"
               />
             </CardContent>
           </Card>

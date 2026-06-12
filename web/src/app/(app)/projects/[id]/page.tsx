@@ -116,7 +116,7 @@ export default async function ProjectDetailPage({
             <ProjectForm
               action={updateProject}
               defaults={project}
-              afterSuccess="refresh"
+              afterSuccess="/projects"
             />
           </CardContent>
         </Card>

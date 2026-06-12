@@ -10,16 +10,24 @@ import type { Database } from "@/lib/database.types";
 
 type Profile = Database["public"]["Tables"]["profiles"]["Row"];
 
-export function ResearcherForm({ profile }: { profile: Profile }) {
+export function ResearcherForm({ 
+  profile,
+  afterSuccess = "refresh",
+}: { 
+  profile: Profile;
+  afterSuccess?: "refresh" | string;
+}) {
   const router = useRouter();
+  const onSuccess = () =>
+    afterSuccess === "refresh" ? router.refresh() : router.push(afterSuccess);
 
   return (
-    <EntityForm action={updateResearcher} onSuccess={() => router.refresh()}>
+    <EntityForm action={updateResearcher} onSuccess={onSuccess}>
       {(state) => (
         <>
           <input type="hidden" name="id" value={profile.id} />
           <Field name="full_name" label={labels.researcher.name} required error={state.errors?.full_name}>
-            <Input id="full_name" name="full_name" defaultValue={profile.full_name} required />
+            <Input id="full_name" name="full_name" defaultValue={profile.full_name ?? ""} required />
           </Field>
           <div className="grid gap-4 sm:grid-cols-2">
             <Field name="department" label={labels.researcher.department} error={state.errors?.department}>

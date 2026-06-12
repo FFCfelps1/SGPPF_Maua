@@ -131,4 +131,10 @@
   button:not(:disabled), [role="button"]:not(:disabled) {
     cursor: pointer;
   }
+  /* Fix native select options dropdown in dark mode on some browsers */
+  .dark select option,
+  .dark option {
+    background-color: var(--card);
+    color: var(--foreground);
+  }
 }

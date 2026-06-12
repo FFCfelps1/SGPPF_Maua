@@ -88,7 +88,7 @@ export default async function PublicationDetailPage({
             <PublicationForm
               action={updatePublication}
               defaults={pub}
-              afterSuccess="refresh"
+              afterSuccess="/publications"
             />
           </CardContent>
         </Card>

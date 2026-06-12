@@ -11,6 +11,7 @@ import {
   FileUp,
   FolderKanban,
   GraduationCap,
+  HelpCircle,
   LayoutDashboard,
   LayoutGrid,
   LogOut,
@@ -24,6 +25,14 @@ import { cn } from "@/lib/utils";
 import { labels } from "@/lib/labels";
 import { signOut } from "@/app/(auth)/_actions";
 import { ModeToggle } from "@/components/mode-toggle";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 const ITEMS = [
   {
@@ -310,6 +319,76 @@ export function AppShell({
             </div>
 
             <div className="ml-auto flex items-center gap-3">
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button variant="ghost" size="icon-sm" aria-label="Ajuda" title="Ajuda">
+                    <HelpCircle className="size-5" />
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+                  <DialogHeader>
+                    <DialogTitle>Manual do Usuário - SGPPF</DialogTitle>
+                    <DialogDescription>
+                      Guia passo a passo para utilizar as principais funcionalidades do sistema.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="space-y-6">
+                    <section className="space-y-3">
+                      <h4 className="text-sm font-semibold border-b pb-1">1. Gestão de Perfil e Pesquisadores</h4>
+                      <ol className="text-sm text-muted-foreground list-decimal list-inside space-y-2">
+                        <li>Acesse <span className="text-foreground font-medium">Pesquisadores</span> para visualizar ou editar seu perfil.</li>
+                        <li>Certifique-se de preencher o <span className="text-foreground font-medium">Lattes</span>, <span className="text-foreground font-medium">ORCID</span> e carregar seu <span className="text-foreground font-medium">Currículo (PDF)</span>.</li>
+                        <li>Administradores podem desativar pesquisadores ou alterar papéis na aba <span className="text-foreground font-medium">Administração</span>.</li>
+                      </ol>
+                    </section>
+
+                    <section className="space-y-3">
+                      <h4 className="text-sm font-semibold border-b pb-1">2. Fluxo de Submissão de Projetos</h4>
+                      <ol className="text-sm text-muted-foreground list-decimal list-inside space-y-2">
+                        <li>Vá em <span className="text-foreground font-medium">Submissões</span> e clique em "Novo".</li>
+                        <li>Preencha os dados básicos, resumo e metodologia. Você pode salvar como <span className="text-foreground font-medium">Rascunho</span> para continuar depois.</li>
+                        <li>Adicione os membros da equipe e anexe a proposta completa em PDF.</li>
+                        <li>Clique em <span className="text-foreground font-medium">Submeter</span> para iniciar o fluxo de aprovação (Departamento → CP → Mauá).</li>
+                      </ol>
+                    </section>
+
+                    <section className="space-y-3">
+                      <h4 className="text-sm font-semibold border-b pb-1">3. Projetos e Financiamentos</h4>
+                      <ol className="text-sm text-muted-foreground list-decimal list-inside space-y-2">
+                        <li>Propostas aprovadas tornam-se <span className="text-foreground font-medium">Projetos</span> automaticamente.</li>
+                        <li>Na página do projeto, você pode gerenciar a carga horária dos membros e registrar <span className="text-foreground font-medium">Financiamentos</span> (bolsas, auxílios, etc).</li>
+                        <li>Mantenha o status do projeto atualizado (Em andamento, Concluído, etc).</li>
+                      </ol>
+                    </section>
+
+                    <section className="space-y-3">
+                      <h4 className="text-sm font-semibold border-b pb-1">4. Publicações e Produção Acadêmica</h4>
+                      <ol className="text-sm text-muted-foreground list-decimal list-inside space-y-2">
+                        <li>Para cadastrar uma publicação, use a opção <span className="text-foreground font-medium">Importar por DOI</span>.</li>
+                        <li>O sistema buscará automaticamente o título, autores, ano e contagem de citações.</li>
+                        <li>Verifique as informações e anexe o PDF da publicação (se permitido) para consulta interna.</li>
+                      </ol>
+                    </section>
+
+                    <section className="space-y-3">
+                      <h4 className="text-sm font-semibold border-b pb-1">5. Exportação e Relatórios</h4>
+                      <ol className="text-sm text-muted-foreground list-decimal list-inside space-y-2">
+                        <li>Em cada listagem (Projetos, Publicações, etc), utilize o botão <span className="text-foreground font-medium">Exportar CSV</span> para baixar os dados filtrados.</li>
+                        <li>O <span className="text-foreground font-medium">Dashboard</span> oferece uma visão consolidada de KPIs e gráficos para análise gerencial.</li>
+                      </ol>
+                    </section>
+
+                    <div className="pt-4 border-t">
+                      <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">Desenvolvedores</h4>
+                      <div className="flex flex-wrap gap-x-6 gap-y-2">
+                        <span className="text-sm font-medium">Felipe Fazio</span>
+                        <span className="text-sm font-medium">João Vitor Sesma</span>
+                        <span className="text-sm font-medium">Ruy Monteiro</span>
+                      </div>
+                    </div>
+                  </div>
+                </DialogContent>
+              </Dialog>
               <ModeToggle />
               <div className="hidden items-center gap-3 sm:flex lg:hidden">
                 <span className="max-w-52 truncate text-sm text-muted-foreground">

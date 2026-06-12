@@ -1,5 +1,13 @@
 -- Dashboard KPIs as an RLS-respecting function. security_invoker = true so the
 -- aggregates run under the caller's RLS. Accepts an optional department filter.
+-- These columns are required by the function below. Later migrations add the
+-- remaining profile/project metadata and keep these declarations idempotent.
+alter table public.profiles
+  add column if not exists department text;
+
+alter table public.projects
+  add column if not exists department text;
+
 create or replace function get_dashboard_stats(p_department text default null)
 returns table (
   total_publications bigint,

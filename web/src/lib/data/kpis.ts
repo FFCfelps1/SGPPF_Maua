@@ -59,7 +59,7 @@ export async function getDashboardKpis(
   });
   
   if (error) {
-    console.error("Error fetching dashboard stats:", error);
+    console.error("Error fetching dashboard stats:", JSON.stringify(error, null, 2));
     return {
       total_publications: 0,
       recent_publications: 0,

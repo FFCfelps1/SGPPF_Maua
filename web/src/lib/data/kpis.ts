@@ -18,6 +18,8 @@ export type DashboardKpis = {
   publications_by_dept: DepartmentMetric[];
   advisings_by_dept: DepartmentMetric[];
   submissions_by_status: { label: string; value: number }[];
+  hours_by_type: { label: string; value: number }[];
+  project_dedication_by_dept: DepartmentMetric[];
 };
 
 export type ResearcherOption = {
@@ -72,6 +74,8 @@ export async function getDashboardKpis(
       publications_by_dept: [],
       advisings_by_dept: [],
       submissions_by_status: [],
+      hours_by_type: [],
+      project_dedication_by_dept: [],
     };
   }
 
@@ -88,6 +92,8 @@ export async function getDashboardKpis(
     publications_by_dept: metrics(stats.publications_by_dept),
     advisings_by_dept: metrics(stats.advisings_by_dept),
     submissions_by_status: metrics(stats.submissions_by_status),
+    hours_by_type: metrics(stats.hours_by_type),
+    project_dedication_by_dept: metrics(stats.project_dedication_by_dept),
   };
 }
 

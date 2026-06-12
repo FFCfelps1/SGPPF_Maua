@@ -17,7 +17,19 @@ import { labels } from "@/lib/labels";
 import type { DashboardKpis, DepartmentMetric } from "@/lib/data/kpis";
 
 export function DashboardCharts({ k }: { k: DashboardKpis }) {
-  const [selectedMetric, setSelectedMetric] = useState<"projects" | "researchers" | "publications" | "advisings" | "submissions">("projects");
+  const [selectedMetric, setSelectedMetric] = useState<"projects" | "researchers" | "publications" | "advisings" | "submissions" | "hours">("projects");
+
+  // Data for Hours Distribution Pie Chart
+  const hoursData = k.hours_by_type.map((h, i) => ({
+    label: h.label,
+    value: h.value,
+    fill: `var(--chart-${(i % 5) + 1})`,
+  }));
+
+  const hoursConfig = hoursData.reduce<ChartConfig>((acc, h) => {
+    acc[h.label] = { label: h.label, color: h.fill };
+    return acc;
+  }, {});
 
   // Data for Advisings Pie Chart
   const advisingsData = [
@@ -57,7 +69,8 @@ export function DashboardCharts({ k }: { k: DashboardKpis }) {
     selectedMetric === "projects" ? k.projects_by_dept :
     selectedMetric === "researchers" ? k.researchers_by_dept :
     selectedMetric === "publications" ? k.publications_by_dept :
-    k.advisings_by_dept;
+    selectedMetric === "advisings" ? k.advisings_by_dept :
+    k.project_dedication_by_dept;
 
   interface DeptChartData extends DepartmentMetric {
     fill: string;
@@ -82,18 +95,52 @@ export function DashboardCharts({ k }: { k: DashboardKpis }) {
     { id: "publications", label: "Publicações" },
     { id: "advisings", label: "Orientações" },
     { id: "submissions", label: "Submissões" },
+    { id: "hours", label: "Horas (Dedicação)" },
   ] as const;
 
-  const chartData = selectedMetric === "submissions" ? submissionsData : deptData;
-  const chartConfig = selectedMetric === "submissions" ? subConfig : deptConfig;
+  const chartData = selectedMetric === "submissions" ? submissionsData : 
+                   selectedMetric === "hours" ? deptData : deptData;
+  const chartConfig = selectedMetric === "submissions" ? subConfig : 
+                    selectedMetric === "hours" ? deptConfig : deptConfig;
 
   return (
     <div className="space-y-6">
-      <div className="grid gap-6 md:grid-cols-3">
+      <div className="grid gap-6 md:grid-cols-4">
+        <Card className="flex flex-col border-none shadow-sm bg-card/50">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base font-semibold">Horas (Carga Total)</CardTitle>
+            <CardDescription>Distribuição de carga horária</CardDescription>
+          </CardHeader>
+          <CardContent className="flex-1 pb-4">
+            <ChartContainer config={hoursConfig} className="mx-auto aspect-square max-h-[180px]">
+              <PieChart>
+                <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
+                <Pie
+                  data={hoursData}
+                  dataKey="value"
+                  nameKey="label"
+                  innerRadius={50}
+                  outerRadius={70}
+                  strokeWidth={5}
+                  paddingAngle={2}
+                >
+                  {hoursData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.fill} />
+                  ))}
+                </Pie>
+                <ChartLegend 
+                  content={<ChartLegendContent nameKey="label" />} 
+                  className="mt-2 flex-wrap justify-center gap-2 text-[10px]" 
+                />
+              </PieChart>
+            </ChartContainer>
+          </CardContent>
+        </Card>
+
         <Card className="flex flex-col border-none shadow-sm bg-card/50">
           <CardHeader className="pb-2">
             <CardTitle className="text-base font-semibold">Status de Submissões</CardTitle>
-            <CardDescription>Fluxo de aprovação de projetos</CardDescription>
+            <CardDescription>Fluxo de aprovação</CardDescription>
           </CardHeader>
           <CardContent className="flex-1 pt-4">
             <ChartContainer config={subConfig} className="h-[200px] w-full">
@@ -107,7 +154,7 @@ export function DashboardCharts({ k }: { k: DashboardKpis }) {
                   className="text-[10px] font-medium text-muted-foreground"
                 />
                 <ChartTooltip content={<ChartTooltipContent />} />
-                <Bar dataKey="value" radius={[4, 4, 0, 0]} barSize={30}>
+                <Bar dataKey="value" radius={[4, 4, 0, 0]} barSize={24}>
                   {submissionsData.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.fill} />
                   ))}
@@ -120,7 +167,7 @@ export function DashboardCharts({ k }: { k: DashboardKpis }) {
         <Card className="flex flex-col border-none shadow-sm bg-card/50">
           <CardHeader className="pb-2">
             <CardTitle className="text-base font-semibold">Status de Orientações</CardTitle>
-            <CardDescription>Distribuição de orientações</CardDescription>
+            <CardDescription>Distribuição atual</CardDescription>
           </CardHeader>
           <CardContent className="flex-1 pb-4">
             <ChartContainer config={advisingsConfig} className="mx-auto aspect-square max-h-[180px]">
@@ -165,7 +212,7 @@ export function DashboardCharts({ k }: { k: DashboardKpis }) {
                   className="text-xs font-medium text-muted-foreground"
                 />
                 <ChartTooltip content={<ChartTooltipContent />} />
-                <Bar dataKey="count" fill="var(--color-count)" radius={[4, 4, 0, 0]} barSize={40} />
+                <Bar dataKey="count" fill="var(--color-count)" radius={[4, 4, 0, 0]} barSize={32} />
               </BarChart>
             </ChartContainer>
           </CardContent>

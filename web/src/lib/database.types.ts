@@ -654,6 +654,8 @@ export type Database = {
           advisings_by_dept: Json
           completed_advisings: number
           funds_received: number
+          hours_by_type: Json
+          project_dedication_by_dept: Json
           projects_by_dept: Json
           publications_by_dept: Json
           recent_publications: number

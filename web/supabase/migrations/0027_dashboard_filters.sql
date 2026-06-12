@@ -19,7 +19,9 @@ returns table (
   researchers_by_dept jsonb,
   publications_by_dept jsonb,
   advisings_by_dept jsonb,
-  submissions_by_status jsonb
+  submissions_by_status jsonb,
+  hours_by_type jsonb,
+  project_dedication_by_dept jsonb
 )
 language sql stable security invoker set search_path = ''
 as $$
@@ -97,6 +99,11 @@ filtered_submissions as (
     and (p_end_year is null or extract(year from s.created_at) <= p_end_year)
     and (p_min_money is null or s.estimated_budget >= p_min_money)
     and (p_max_money is null or s.estimated_budget <= p_max_money)
+),
+filtered_profiles as (
+  select * from public.profiles
+  where (p_department is null or department = p_department)
+    and (p_researcher is null or id = p_researcher)
 )
 select
   (select count(*) from filtered_publications),
@@ -111,9 +118,7 @@ select
   ) t),
   (select coalesce(jsonb_agg(t order by t.label), '[]'::jsonb) from (
     select coalesce(department, 'Indefinido') as label, count(*) as value
-    from public.profiles
-    where (p_department is null or department = p_department)
-      and (p_researcher is null or id = p_researcher)
+    from filtered_profiles
     group by department
   ) t),
   (select coalesce(jsonb_agg(t order by t.label), '[]'::jsonb) from (
@@ -134,6 +139,17 @@ select
   (select coalesce(jsonb_agg(t order by t.label), '[]'::jsonb) from (
     select status::text as label, count(*) as value
     from filtered_submissions group by status
+  ) t),
+  (select jsonb_build_array(
+    jsonb_build_object('label', 'Pesquisa', 'value', coalesce(sum(research_hours), 0)),
+    jsonb_build_object('label', 'Ensino', 'value', coalesce(sum(teaching_hours), 0)),
+    jsonb_build_object('label', 'Outros', 'value', coalesce(sum(other_hours), 0))
+  ) from filtered_profiles),
+  (select coalesce(jsonb_agg(t order by t.label), '[]'::jsonb) from (
+    select coalesce(p.department, 'Indefinido') as label, sum(pm.dedication_hours) as value
+    from filtered_projects p
+    join public.project_members pm on pm.project_id = p.id
+    group by p.department
   ) t);
 $$;
 

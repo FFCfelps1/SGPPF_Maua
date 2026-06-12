@@ -50,12 +50,12 @@ export async function getDashboardKpis(
 ): Promise<DashboardKpis> {
   const supabase = await createClient();
   const { data, error } = await supabase.rpc("get_dashboard_stats_filtered", {
-    p_department: filters.department,
-    p_researcher: filters.researcher,
-    p_start_year: filters.startYear,
-    p_end_year: filters.endYear,
-    p_min_money: filters.minMoney,
-    p_max_money: filters.maxMoney,
+    p_department: filters.department ?? null,
+    p_researcher: filters.researcher ?? null,
+    p_start_year: filters.startYear ?? null,
+    p_end_year: filters.endYear ?? null,
+    p_min_money: filters.minMoney ?? null,
+    p_max_money: filters.maxMoney ?? null,
   });
   
   if (error) {

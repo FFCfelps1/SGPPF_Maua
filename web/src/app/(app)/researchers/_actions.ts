@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { action } from "@/lib/crud/action";
 import { researcherUpdateSchema, researcherCreateSchema } from "@/lib/schemas/researcher";
 import { createClient } from "@/lib/supabase/server";
+import { labels } from "@/lib/labels";
 
 export const updateResearcher = action(
   researcherUpdateSchema,

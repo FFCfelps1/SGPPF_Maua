@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { action } from "@/lib/crud/action";
 import {
   publicationCreateSchema,
@@ -45,6 +46,7 @@ export async function deletePublication(id: number): Promise<void> {
   const { error } = await supabase.from("publications").delete().eq("id", id);
   if (error) throw error;
   revalidatePath("/publications");
+  redirect("/publications");
 }
 
 export async function addSelfAsAuthor(publicationId: number): Promise<void> {

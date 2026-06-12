@@ -112,6 +112,30 @@ export type Database = {
           },
         ]
       }
+      departments: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: number
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: never
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: never
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       funding: {
         Row: {
           agency: string
@@ -175,6 +199,7 @@ export type Database = {
           created_at: string
           cv_url: string | null
           department: string | null
+          department_id: number | null
           email: string
           employment_type: string | null
           full_name: string
@@ -198,6 +223,7 @@ export type Database = {
           created_at?: string
           cv_url?: string | null
           department?: string | null
+          department_id?: number | null
           email: string
           employment_type?: string | null
           full_name: string
@@ -221,6 +247,7 @@ export type Database = {
           created_at?: string
           cv_url?: string | null
           department?: string | null
+          department_id?: number | null
           email?: string
           employment_type?: string | null
           full_name?: string
@@ -288,7 +315,9 @@ export type Database = {
           cp_approval_at: string | null
           created_at: string
           department: string | null
+          department_id: number | null
           dept_approval_at: string | null
+          document_url: string | null
           estimated_budget: number | null
           funding_agency: string | null
           funding_agency_status: Database["public"]["Enums"]["agency_project_status"] | null
@@ -312,7 +341,9 @@ export type Database = {
           cp_approval_at?: string | null
           created_at?: string
           department?: string | null
+          department_id?: number | null
           dept_approval_at?: string | null
+          document_url?: string | null
           estimated_budget?: number | null
           funding_agency?: string | null
           funding_agency_status?: Database["public"]["Enums"]["agency_project_status"] | null
@@ -336,7 +367,9 @@ export type Database = {
           cp_approval_at?: string | null
           created_at?: string
           department?: string | null
+          department_id?: number | null
           dept_approval_at?: string | null
+          document_url?: string | null
           estimated_budget?: number | null
           funding_agency?: string | null
           funding_agency_status?: Database["public"]["Enums"]["agency_project_status"] | null
@@ -370,7 +403,9 @@ export type Database = {
           code: string | null
           created_at: string
           department: string | null
+          department_id: number | null
           description: string | null
+          document_url: string | null
           end_date: string | null
           id: number
           lead_id: string
@@ -385,7 +420,9 @@ export type Database = {
           code?: string | null
           created_at?: string
           department?: string | null
+          department_id?: number | null
           description?: string | null
+          document_url?: string | null
           end_date?: string | null
           id?: never
           lead_id: string
@@ -400,7 +437,9 @@ export type Database = {
           code?: string | null
           created_at?: string
           department?: string | null
+          department_id?: number | null
           description?: string | null
+          document_url?: string | null
           end_date?: string | null
           id?: never
           lead_id?: string
@@ -466,6 +505,7 @@ export type Database = {
           citation_count: number | null
           created_at: string
           doi: string | null
+          document_url: string | null
           id: number
           impact_factor: number | null
           issn: string | null
@@ -483,6 +523,7 @@ export type Database = {
           citation_count?: number | null
           created_at?: string
           doi?: string | null
+          document_url?: string | null
           id?: never
           impact_factor?: number | null
           issn?: string | null
@@ -500,6 +541,7 @@ export type Database = {
           citation_count?: number | null
           created_at?: string
           doi?: string | null
+          document_url?: string | null
           id?: never
           impact_factor?: number | null
           issn?: string | null
@@ -612,6 +654,8 @@ export type Database = {
           advisings_by_dept: Json
           completed_advisings: number
           funds_received: number
+          hours_by_type: Json
+          project_dedication_by_dept: Json
           projects_by_dept: Json
           publications_by_dept: Json
           recent_publications: number
@@ -657,6 +701,8 @@ export type Database = {
         | "submissions:read"
         | "submissions:write"
         | "submissions:approve"
+        | "departments:read"
+        | "departments:manage"
       app_role: "admin" | "researcher" | "consultant" | "dept_manager" | "cp_manager" | "maua_manager"
       funding_status: "approved" | "in_execution" | "completed" | "cancelled"
       project_status: "planned" | "in_progress" | "completed" | "cancelled"
@@ -843,6 +889,8 @@ export const Constants = {
         "submissions:read",
         "submissions:write",
         "submissions:approve",
+        "departments:read",
+        "departments:manage",
       ],
       app_role: ["admin", "researcher", "consultant", "dept_manager", "cp_manager", "maua_manager"],
       funding_status: ["approved", "in_execution", "completed", "cancelled"],

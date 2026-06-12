@@ -16,7 +16,7 @@ const base = {
   title: z.string().trim().min(2, labels.errors.required),
   code: optText,
   description: optText,
-  department: optText,
+  department_id: z.coerce.number().int().optional().nullable(),
   unit: optText,
   modality: optText,
   status: z.enum(PROJECT_STATUS),

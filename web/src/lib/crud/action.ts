@@ -12,6 +12,7 @@ export type ActionState = {
 type Ctx = {
   supabase: Awaited<ReturnType<typeof createClient>>;
   userId: string;
+  formData: FormData;
 };
 
 type ActionOptions = { revalidate?: string };
@@ -47,7 +48,7 @@ export function action<S extends z.ZodType>(
     }
 
     try {
-      await handler(parsed.data, { supabase, userId });
+      await handler(parsed.data, { supabase, userId, formData });
     } catch (err) {
       // The client only ever sees the generic message, but the real cause
       // (most often an RLS denial — e.g. a missing user_role JWT claim) must

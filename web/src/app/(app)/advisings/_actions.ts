@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { action } from "@/lib/crud/action";
 import {
   advisingCreateSchema,
@@ -33,4 +34,5 @@ export async function deleteAdvising(id: number): Promise<void> {
   const { error } = await supabase.from("advisings").delete().eq("id", id);
   if (error) throw error;
   revalidatePath("/advisings");
+  redirect("/advisings");
 }

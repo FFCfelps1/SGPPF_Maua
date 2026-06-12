@@ -18,6 +18,8 @@ export type DashboardKpis = {
   publications_by_dept: DepartmentMetric[];
   advisings_by_dept: DepartmentMetric[];
   submissions_by_status: { label: string; value: number }[];
+  hours_by_type: { label: string; value: number }[];
+  project_dedication_by_dept: DepartmentMetric[];
 };
 
 export type ResearcherOption = {
@@ -50,16 +52,16 @@ export async function getDashboardKpis(
 ): Promise<DashboardKpis> {
   const supabase = await createClient();
   const { data, error } = await supabase.rpc("get_dashboard_stats_filtered", {
-    p_department: filters.department,
-    p_researcher: filters.researcher,
-    p_start_year: filters.startYear,
-    p_end_year: filters.endYear,
-    p_min_money: filters.minMoney,
-    p_max_money: filters.maxMoney,
-  });
+    p_department: filters.department ?? null,
+    p_researcher: filters.researcher ?? null,
+    p_start_year: filters.startYear ?? null,
+    p_end_year: filters.endYear ?? null,
+    p_min_money: filters.minMoney ?? null,
+    p_max_money: filters.maxMoney ?? null,
+  } as any);
   
   if (error) {
-    console.error("Error fetching dashboard stats:", error);
+    console.error("Error fetching dashboard stats:", JSON.stringify(error, null, 2));
     return {
       total_publications: 0,
       recent_publications: 0,
@@ -72,6 +74,8 @@ export async function getDashboardKpis(
       publications_by_dept: [],
       advisings_by_dept: [],
       submissions_by_status: [],
+      hours_by_type: [],
+      project_dedication_by_dept: [],
     };
   }
 
@@ -88,33 +92,19 @@ export async function getDashboardKpis(
     publications_by_dept: metrics(stats.publications_by_dept),
     advisings_by_dept: metrics(stats.advisings_by_dept),
     submissions_by_status: metrics(stats.submissions_by_status),
+    hours_by_type: metrics(stats.hours_by_type),
+    project_dedication_by_dept: metrics(stats.project_dedication_by_dept),
   };
 }
 
 export async function getDepartments(): Promise<string[]> {
   const supabase = await createClient();
   const { data } = await supabase
-    .from("profiles")
-    .select("department")
-    .not("department", "is", null);
+    .from("departments")
+    .select("name")
+    .order("name");
   
-  const depts = new Set((data ?? []).map((d) => d.department!));
-  
-  const { data: projData } = await supabase
-    .from("projects")
-    .select("department")
-    .not("department", "is", null);
-  
-  (projData ?? []).forEach((d) => depts.add(d.department!));
-
-  const { data: submissionData } = await supabase
-    .from("project_submissions")
-    .select("department")
-    .not("department", "is", null);
-
-  (submissionData ?? []).forEach((d) => depts.add(d.department!));
-  
-  return Array.from(depts).sort();
+  return (data ?? []).map((d) => d.name);
 }
 
 export async function getResearchers(): Promise<ResearcherOption[]> {

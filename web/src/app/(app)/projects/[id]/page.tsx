@@ -27,10 +27,15 @@ export default async function ProjectDetailPage({
 
   const { data: project } = await supabase
     .from("projects")
-    .select("*, funding(*), project_members(*, profiles(full_name, email))")
+    .select("*, funding(*), project_members(*, profiles(full_name, email)), departments(name)")
     .eq("id", Number(id))
     .single();
   if (!project) notFound();
+
+  const { data: departments } = await supabase
+    .from("departments")
+    .select("id, name")
+    .order("name");
 
   const { data: claims } = await supabase.auth.getClaims();
   const viewerId = claims?.claims?.sub;
@@ -40,6 +45,7 @@ export default async function ProjectDetailPage({
   const canDelete = perms.has("projects:delete") && canManage;
   const funding = (project.funding ?? []) as Funding[];
   const members = (project.project_members ?? []) as any[];
+  const deptName = (project as any).departments?.name || project.department;
 
   return (
     <div className="space-y-6">
@@ -89,9 +95,9 @@ export default async function ProjectDetailPage({
       ) : null}
 
       <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-muted-foreground">
-        {project.department ? (
+        {deptName ? (
           <p>
-            <span className="font-medium text-foreground">{labels.researcher.department}:</span> {project.department}
+            <span className="font-medium text-foreground">{labels.researcher.department}:</span> {deptName}
           </p>
         ) : null}
         {project.unit ? (
@@ -99,40 +105,12 @@ export default async function ProjectDetailPage({
             <span className="font-medium text-foreground">{labels.researcher.unit}:</span> {project.unit}
           </p>
         ) : null}
-      </div>
-
-      {project.description ? (
-        <p className="text-sm text-muted-foreground">
-          {project.description}
+        <p>
+          <span className="font-medium text-foreground">{labels.project.startDate}:</span> {project.start_date || "—"}
         </p>
-      ) : null}
-
-      <div className="grid gap-6 lg:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <CardTitle>{labels.project.members}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ProjectMembersEditor
-              projectId={project.id}
-              members={members}
-              canWrite={canEdit}
-            />
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>{labels.project.funding}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <FundingTab
-              projectId={project.id}
-              funding={funding}
-              canManage={perms.has("funding:write") && canManage}
-            />
-          </CardContent>
-        </Card>
+        <p>
+          <span className="font-medium text-foreground">{labels.project.endDate}:</span> {project.end_date || "—"}
+        </p>
       </div>
 
       {canEdit ? (
@@ -145,10 +123,16 @@ export default async function ProjectDetailPage({
               action={updateProject}
               defaults={project}
               afterSuccess="/projects"
+              departments={departments || []}
             />
           </CardContent>
         </Card>
       ) : null}
+
+      <div className="grid gap-6 lg:grid-cols-2">
+        <FundingTab projectId={project.id} funding={funding} canManage={canEdit} />
+        <ProjectMembersEditor projectId={project.id} members={members} canWrite={canEdit} />
+      </div>
     </div>
   );
 }

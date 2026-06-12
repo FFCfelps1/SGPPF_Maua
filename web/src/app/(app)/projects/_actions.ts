@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { action } from "@/lib/crud/action";
 import { projectCreateSchema, projectUpdateSchema } from "@/lib/schemas/project";
 import { fundingCreateSchema } from "@/lib/schemas/funding";
@@ -51,6 +52,7 @@ export async function deleteProject(id: number): Promise<void> {
   const { error } = await supabase.from("projects").delete().eq("id", id);
   if (error) throw error;
   revalidatePath("/projects");
+  redirect("/projects");
 }
 
 export const createFunding = action(

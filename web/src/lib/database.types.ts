@@ -44,6 +44,7 @@ export type Database = {
           advisor_id: string
           co_advisor_id: string | null
           created_at: string
+          document_url: string | null
           end_date: string | null
           id: number
           level: Database["public"]["Enums"]["advising_level"]
@@ -59,6 +60,7 @@ export type Database = {
           advisor_id: string
           co_advisor_id?: string | null
           created_at?: string
+          document_url?: string | null
           end_date?: string | null
           id?: never
           level: Database["public"]["Enums"]["advising_level"]
@@ -74,6 +76,7 @@ export type Database = {
           advisor_id?: string
           co_advisor_id?: string | null
           created_at?: string
+          document_url?: string | null
           end_date?: string | null
           id?: never
           level?: Database["public"]["Enums"]["advising_level"]
@@ -170,6 +173,7 @@ export type Database = {
           affiliation_date: string | null
           area_of_expertise: string | null
           created_at: string
+          cv_url: string | null
           department: string | null
           email: string
           employment_type: string | null
@@ -179,9 +183,12 @@ export type Database = {
           is_active: boolean
           lattes_url: string | null
           orcid: string | null
+          other_hours: number
           position: string | null
           research_gate_id: string | null
+          research_hours: number
           role: Database["public"]["Enums"]["app_role"]
+          teaching_hours: number
           unit: string | null
           updated_at: string
         }
@@ -189,6 +196,7 @@ export type Database = {
           affiliation_date?: string | null
           area_of_expertise?: string | null
           created_at?: string
+          cv_url?: string | null
           department?: string | null
           email: string
           employment_type?: string | null
@@ -198,9 +206,12 @@ export type Database = {
           is_active?: boolean
           lattes_url?: string | null
           orcid?: string | null
+          other_hours?: number
           position?: string | null
           research_gate_id?: string | null
+          research_hours?: number
           role?: Database["public"]["Enums"]["app_role"]
+          teaching_hours?: number
           unit?: string | null
           updated_at?: string
         }
@@ -208,6 +219,7 @@ export type Database = {
           affiliation_date?: string | null
           area_of_expertise?: string | null
           created_at?: string
+          cv_url?: string | null
           department?: string | null
           email?: string
           employment_type?: string | null
@@ -217,9 +229,12 @@ export type Database = {
           is_active?: boolean
           lattes_url?: string | null
           orcid?: string | null
+          other_hours?: number
           position?: string | null
           research_gate_id?: string | null
+          research_hours?: number
           role?: Database["public"]["Enums"]["app_role"]
+          teaching_hours?: number
           unit?: string | null
           updated_at?: string
         }

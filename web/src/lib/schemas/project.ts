@@ -22,6 +22,7 @@ const base = {
   status: z.enum(PROJECT_STATUS),
   start_date: optText,
   end_date: optText,
+  document_url: optText,
 };
 
 export const projectCreateSchema = z.object(base);

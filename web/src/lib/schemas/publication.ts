@@ -28,6 +28,7 @@ const base = {
   impact_factor: optNum,
   citation_count: optInt,
   knowledge_area: optText,
+  document_url: optText,
 };
 
 export const publicationCreateSchema = z.object(base);

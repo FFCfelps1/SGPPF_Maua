@@ -8,7 +8,7 @@ import { ConfirmDialog } from "@/lib/crud/confirm-dialog";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { labels } from "@/lib/labels";
-import { RiArrowLeftLine } from "@remixicon/react";
+import { RiArrowLeftLine, RiFilePdfLine } from "@remixicon/react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
@@ -51,6 +51,17 @@ export default async function PublicationDetailPage({
             <RiArrowLeftLine className="size-4" />
           </Link>
           <h1 className="text-2xl font-semibold tracking-tight">{pub.title}</h1>
+          {pub.document_url && (
+            <a
+              href={pub.document_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={cn(buttonVariants({ variant: "outline", size: "sm" }), "gap-2")}
+            >
+              <RiFilePdfLine className="size-4 text-primary" />
+              {labels.publication.document.split("(")[0].trim()}
+            </a>
+          )}
         </div>
         {canDelete ? (
           <ConfirmDialog

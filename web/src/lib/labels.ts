@@ -16,8 +16,8 @@ export const labels = {
     groups: "Grupos",
     admin: "Administração",
     signOut: "Sair",
-    },
-    shell: {
+  },
+  shell: {
     institution: "Instituto Mauá de Tecnologia",
     management: "Gestão acadêmica",
     account: "Conta institucional",
@@ -60,6 +60,7 @@ export const labels = {
     researchHours: "Horas de pesquisa",
     otherHours: "Outras horas",
     affiliationDate: "Data de admissão",
+    cv: "Currículo (PDF)",
     inactive: "Inativo",
   },
   employmentTypes: {
@@ -91,6 +92,7 @@ export const labels = {
     doiFailed: "Falha ao consultar o Crossref. Tente novamente ou insira manualmente.",
     importByDoiTitle: "Importar por DOI",
     manualEntry: "Ou cadastre manualmente",
+    document: "Anexo da Publicação (PDF)",
   },
   publicationTypes: {
     article: "Artigo",
@@ -111,6 +113,7 @@ export const labels = {
     startDate: "Início",
     endDate: "Término",
     funding: "Financiamentos",
+    document: "Documento do Projeto (PDF)",
   },
   projectStatus: {
     planned: "Planejado",
@@ -146,6 +149,7 @@ export const labels = {
     scholarshipAgency: "Agência da bolsa",
     startDate: "Início",
     endDate: "Conclusão",
+    document: "Anexo da Orientação (PDF)",
     none: "—",
   },
   advisingLevel: {
@@ -280,6 +284,7 @@ export const labels = {
     deptApproval: "Aprovação Departamento",
     cpApproval: "Aprovação CP",
     mauaApproval: "Aprovação Mauá",
+    document: "Proposta Completa (PDF)",
   },
   submissionStatus: {
     draft: "Rascunho",

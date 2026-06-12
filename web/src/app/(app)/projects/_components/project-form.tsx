@@ -7,6 +7,7 @@ import { Field } from "@/lib/crud/field";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { FileUpload } from "@/components/ui/file-upload";
 import { labels } from "@/lib/labels";
 import { PROJECT_STATUS } from "@/lib/schemas/project";
 import { searchResearchers } from "@/app/(app)/submissions/_actions";
@@ -36,6 +37,7 @@ export function ProjectForm({
   const [selectedMembers, setSelectedMembers] = useState<{id: string, name: string, hours: number}[]>([]);
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<{ id: string; full_name: string; email: string }[]>([]);
+  const [documentUrl, setDocumentUrl] = useState(d.document_url ?? "");
 
   const isNew = !d.id;
 
@@ -53,6 +55,7 @@ export function ProjectForm({
       {(state) => (
         <>
           {d.id ? <input type="hidden" name="id" value={d.id} /> : null}
+          <input type="hidden" name="document_url" value={documentUrl} />
           
           {/* Hidden input to pass member data (ID + Hours) to the action */}
           {isNew && (
@@ -66,6 +69,15 @@ export function ProjectForm({
           <Field name="title" label={labels.project.title} required error={state.errors?.title}>
             <Input id="title" name="title" defaultValue={d.title ?? ""} required />
           </Field>
+          <div className="pt-2">
+            <FileUpload
+              label={labels.project.document}
+              value={documentUrl}
+              onUpload={setDocumentUrl}
+              onRemove={() => setDocumentUrl("")}
+              folder="projects"
+            />
+          </div>
           <Field name="description" label={labels.project.description} error={state.errors?.description}>
             <Input id="description" name="description" defaultValue={d.description ?? ""} />
           </Field>

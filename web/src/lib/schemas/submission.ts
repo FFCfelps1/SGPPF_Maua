@@ -42,6 +42,7 @@ const base = {
   status: z.enum(SUBMISSION_STATUS).default("draft"),
   funding_agency_status: z.preprocess(emptyToNull, z.enum(AGENCY_PROJECT_STATUS).nullable()),
   internal_feedback: optText,
+  document_url: optText,
 };
 
 export const submissionCreateSchema = z.object(base);

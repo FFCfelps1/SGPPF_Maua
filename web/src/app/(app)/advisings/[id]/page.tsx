@@ -10,7 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { labels } from "@/lib/labels";
 import type { Database } from "@/lib/database.types";
-import { RiArrowLeftLine } from "@remixicon/react";
+import { RiArrowLeftLine, RiFilePdfLine } from "@remixicon/react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
@@ -60,6 +60,17 @@ export default async function AdvisingDetailPage({
           <Badge variant="outline">
             {labels.advisingStatus[advising.status]}
           </Badge>
+          {advising.document_url && (
+            <a
+              href={advising.document_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={cn(buttonVariants({ variant: "outline", size: "sm" }), "gap-2")}
+            >
+              <RiFilePdfLine className="size-4 text-primary" />
+              {labels.advising.document.split("(")[0].trim()}
+            </a>
+          )}
         </div>
         {canDelete ? (
           <ConfirmDialog

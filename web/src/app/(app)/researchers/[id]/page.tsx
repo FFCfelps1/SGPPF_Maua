@@ -9,7 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { labels } from "@/lib/labels";
 import type { Database } from "@/lib/database.types";
-import { RiArrowLeftLine } from "@remixicon/react";
+import { RiArrowLeftLine, RiFilePdfLine } from "@remixicon/react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
@@ -54,6 +54,17 @@ export default async function ResearcherDetailPage({
           {!profile.is_active ? (
             <Badge variant="outline">{labels.researcher.inactive}</Badge>
           ) : null}
+          {profile.cv_url && (
+            <a
+              href={profile.cv_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={cn(buttonVariants({ variant: "outline", size: "sm" }), "gap-2")}
+            >
+              <RiFilePdfLine className="size-4 text-primary" />
+              {labels.researcher.cv.split("(")[0].trim()}
+            </a>
+          )}
         </div>
         {canDelete && profile.is_active ? (
           <ConfirmDialog

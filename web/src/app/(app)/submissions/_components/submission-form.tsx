@@ -7,6 +7,7 @@ import { Field } from "@/lib/crud/field";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { FileUpload } from "@/components/ui/file-upload";
 import { labels } from "@/lib/labels";
 import { searchResearchers } from "../_actions";
 import { RiUserAddLine, RiDeleteBinLine, RiSearchLine } from "@remixicon/react";
@@ -32,6 +33,7 @@ export function SubmissionForm({
   const [selectedMembers, setSelectedMembers] = useState<{id: string, name: string, hours: number}[]>([]);
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<{ id: string; full_name: string; email: string }[]>([]);
+  const [documentUrl, setDocumentUrl] = useState(d.document_url ?? "");
   const [pending, startTransition] = useTransition();
 
   const isNew = !d.id;
@@ -50,6 +52,7 @@ export function SubmissionForm({
       {(state) => (
         <>
           {d.id ? <input type="hidden" name="id" value={d.id} /> : null}
+          <input type="hidden" name="document_url" value={documentUrl} />
           
           {/* Hidden input to pass member data (ID + Hours) to the action */}
           {isNew && (
@@ -60,10 +63,19 @@ export function SubmissionForm({
             />
           )}
 
-          {/* ... existing fields (title, abstract, etc.) ... */}
           <Field name="title" label={labels.submission.projectTitle} required error={state.errors?.title}>
             <Input id="title" name="title" defaultValue={d.title ?? ""} required />
           </Field>
+
+          <div className="pt-2">
+            <FileUpload
+              label={labels.submission.document}
+              value={documentUrl}
+              onUpload={setDocumentUrl}
+              onRemove={() => setDocumentUrl("")}
+              folder="submissions"
+            />
+          </div>
           
           <Field name="abstract" label={labels.submission.abstract} error={state.errors?.abstract}>
             <textarea

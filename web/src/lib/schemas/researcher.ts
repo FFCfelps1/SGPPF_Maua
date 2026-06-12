@@ -25,6 +25,7 @@ export const researcherUpdateSchema = z.object({
   teaching_hours: z.coerce.number().int().nonnegative().default(0),
   research_hours: z.coerce.number().int().nonnegative().default(0),
   other_hours: z.coerce.number().int().nonnegative().default(0),
+  cv_url: optionalText,
 });
 
 export type ResearcherUpdate = z.infer<typeof researcherUpdateSchema>;
@@ -48,6 +49,7 @@ export const researcherCreateSchema = z.object({
   teaching_hours: z.coerce.number().int().nonnegative().default(0),
   research_hours: z.coerce.number().int().nonnegative().default(0),
   other_hours: z.coerce.number().int().nonnegative().default(0),
+  cv_url: optionalText,
 });
 
 export type ResearcherCreate = z.infer<typeof researcherCreateSchema>;

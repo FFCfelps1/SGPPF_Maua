@@ -1,9 +1,11 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { EntityForm } from "@/lib/crud/entity-form";
 import { Field } from "@/lib/crud/field";
 import { Input } from "@/components/ui/input";
+import { FileUpload } from "@/components/ui/file-upload";
 import { labels } from "@/lib/labels";
 import { PUBLICATION_TYPES } from "@/lib/schemas/publication";
 import type { ActionState } from "@/lib/crud/action";
@@ -26,6 +28,9 @@ export function PublicationForm({
 }) {
   const router = useRouter();
   const d = defaults ?? {};
+
+  const [documentUrl, setDocumentUrl] = useState(d.document_url ?? "");
+
   const onSuccess = () =>
     afterSuccess === "refresh" ? router.refresh() : router.push(afterSuccess);
 
@@ -34,9 +39,22 @@ export function PublicationForm({
       {(state) => (
         <>
           {d.id ? <input type="hidden" name="id" value={d.id} /> : null}
+          <input type="hidden" name="document_url" value={documentUrl} />
+
           <Field name="title" label={labels.publication.title} required error={state.errors?.title}>
             <Input id="title" name="title" defaultValue={d.title ?? ""} required />
           </Field>
+
+          <div className="pt-2">
+            <FileUpload
+              label={labels.publication.document}
+              value={documentUrl}
+              onUpload={setDocumentUrl}
+              onRemove={() => setDocumentUrl("")}
+              folder="publications"
+            />
+          </div>
+
           <div className="grid gap-4 sm:grid-cols-2">
             <Field name="type" label={labels.publication.type} error={state.errors?.type}>
               <select id="type" name="type" defaultValue={d.type ?? ""} className={selectClass}>

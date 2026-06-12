@@ -11,7 +11,7 @@ import { updateSubmission } from "../_actions";
 import { ApprovalControls } from "../_components/approval-controls";
 import { SubmissionMembersEditor } from "../_components/members-editor";
 import { Separator } from "@/components/ui/separator";
-import { RiEditLine, RiCloseLine, RiArrowLeftLine } from "@remixicon/react";
+import { RiEditLine, RiCloseLine, RiArrowLeftLine, RiFilePdfLine } from "@remixicon/react";
 
 export default async function SubmissionDetailsPage({ 
   params,
@@ -70,9 +70,22 @@ export default async function SubmissionDetailsPage({
                 )}
               </div>
               <h1 className="text-3xl font-bold tracking-tight">{submission.title}</h1>
-              <p className="text-muted-foreground">
-                Submetido por {submission.profiles?.full_name} em {new Date(submission.created_at).toLocaleDateString("pt-BR")}
-              </p>
+              <div className="flex items-center gap-4 mt-1">
+                <p className="text-muted-foreground">
+                  Submetido por {submission.profiles?.full_name} em {new Date(submission.created_at).toLocaleDateString("pt-BR")}
+                </p>
+                {submission.document_url && (
+                  <a
+                    href={submission.document_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={cn(buttonVariants({ variant: "outline", size: "sm" }), "h-7 gap-2")}
+                  >
+                    <RiFilePdfLine className="size-4 text-primary" />
+                    {labels.submission.document.split("(")[0].trim()}
+                  </a>
+                )}
+              </div>
             </div>
           </div>
 

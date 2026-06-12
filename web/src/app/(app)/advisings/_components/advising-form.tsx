@@ -1,9 +1,11 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { EntityForm } from "@/lib/crud/entity-form";
 import { Field } from "@/lib/crud/field";
 import { Input } from "@/components/ui/input";
+import { FileUpload } from "@/components/ui/file-upload";
 import { labels } from "@/lib/labels";
 import { ADVISING_LEVEL, ADVISING_STATUS } from "@/lib/schemas/advising";
 import type { ActionState } from "@/lib/crud/action";
@@ -30,6 +32,9 @@ export function AdvisingForm({
 }) {
   const router = useRouter();
   const d = defaults ?? {};
+
+  const [documentUrl, setDocumentUrl] = useState(d.document_url ?? "");
+
   const onSuccess = () =>
     afterSuccess === "refresh" ? router.refresh() : router.push(afterSuccess);
 
@@ -38,9 +43,22 @@ export function AdvisingForm({
       {(state) => (
         <>
           {d.id ? <input type="hidden" name="id" value={d.id} /> : null}
+          <input type="hidden" name="document_url" value={documentUrl} />
+
           <Field name="student_name" label={labels.advising.student} required error={state.errors?.student_name}>
             <Input id="student_name" name="student_name" defaultValue={d.student_name ?? ""} required />
           </Field>
+
+          <div className="pt-2">
+            <FileUpload
+              label={labels.advising.document}
+              value={documentUrl}
+              onUpload={setDocumentUrl}
+              onRemove={() => setDocumentUrl("")}
+              folder="advisings"
+            />
+          </div>
+
           <div className="grid gap-4 sm:grid-cols-2">
             <Field name="level" label={labels.advising.level} error={state.errors?.level}>
               <select id="level" name="level" defaultValue={d.level ?? "masters"} className={selectClass}>

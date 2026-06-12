@@ -1,12 +1,15 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { EntityForm } from "@/lib/crud/entity-form";
 import { Field } from "@/lib/crud/field";
 import { Input } from "@/components/ui/input";
+import { FileUpload } from "@/components/ui/file-upload";
 import { updateResearcher } from "../_actions";
 import { labels } from "@/lib/labels";
 import type { Database } from "@/lib/database.types";
+import type { ActionState } from "@/lib/crud/action";
 
 type Profile = Database["public"]["Tables"]["profiles"]["Row"];
 type Action = (state: ActionState, formData: FormData) => Promise<ActionState>;
@@ -27,6 +30,8 @@ export function ResearcherForm({
   const d = profile ?? {};
   const isEdit = !!d.id;
 
+  const [cvUrl, setCvUrl] = useState(d.cv_url ?? "");
+
   const onSuccess = () =>
     afterSuccess === "refresh" ? router.refresh() : router.push(afterSuccess);
 
@@ -35,6 +40,8 @@ export function ResearcherForm({
       {(state) => (
         <>
           {isEdit && <input type="hidden" name="id" value={d.id} />}
+          <input type="hidden" name="cv_url" value={cvUrl} />
+
           <Field name="full_name" label={labels.researcher.name} required error={state.errors?.full_name}>
             <Input id="full_name" name="full_name" defaultValue={d.full_name ?? ""} required />
           </Field>
@@ -43,6 +50,17 @@ export function ResearcherForm({
               <Input id="email" name="email" type="email" defaultValue={d.email ?? ""} required />
             </Field>
           )}
+
+          <div className="pt-2">
+            <FileUpload
+              label={labels.researcher.cv}
+              value={cvUrl}
+              onUpload={setCvUrl}
+              onRemove={() => setCvUrl("")}
+              folder="cvs"
+            />
+          </div>
+
           <div className="grid gap-4 sm:grid-cols-2">
             <Field name="department" label={labels.researcher.department} error={state.errors?.department}>
               <Input id="department" name="department" defaultValue={d.department ?? ""} />

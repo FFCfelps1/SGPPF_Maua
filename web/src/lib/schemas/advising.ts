@@ -29,6 +29,7 @@ const base = {
   scholarship_agency: optText,
   start_date: optText,
   end_date: optText,
+  document_url: optText,
 };
 
 export const advisingCreateSchema = z.object(base);

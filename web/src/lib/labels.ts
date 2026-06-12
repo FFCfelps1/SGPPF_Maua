@@ -54,8 +54,16 @@ export const labels = {
     scholar: "Google Scholar ID",
     researchGate: "ResearchGate ID",
     employmentType: "Vínculo",
+    teachingHours: "Horas de aula",
+    researchHours: "Horas de pesquisa",
+    otherHours: "Outras horas",
     affiliationDate: "Data de admissão",
     inactive: "Inativo",
+  },
+  employmentTypes: {
+    full_time: "Tempo integral",
+    part_time: "Tempo parcial",
+    hourly: "Horista",
   },
   publication: {
     title: "Título",

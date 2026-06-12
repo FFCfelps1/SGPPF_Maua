@@ -22,6 +22,9 @@ export const researcherUpdateSchema = z.object({
   research_gate_id: optionalText,
   employment_type: optionalText,
   affiliation_date: optionalText,
+  teaching_hours: z.coerce.number().int().nonnegative().default(0),
+  research_hours: z.coerce.number().int().nonnegative().default(0),
+  other_hours: z.coerce.number().int().nonnegative().default(0),
 });
 
 export type ResearcherUpdate = z.infer<typeof researcherUpdateSchema>;

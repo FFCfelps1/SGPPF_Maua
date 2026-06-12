@@ -95,8 +95,16 @@ function ReadOnlyProfile({ profile }: { profile: Profile }) {
     [labels.researcher.lattes, profile.lattes_url],
     [labels.researcher.scholar, profile.google_scholar_id],
     [labels.researcher.researchGate, profile.research_gate_id],
-    [labels.researcher.employmentType, profile.employment_type],
+    [
+      labels.researcher.employmentType, 
+      profile.employment_type 
+        ? (labels.employmentTypes as any)[profile.employment_type] || profile.employment_type 
+        : null
+    ],
     [labels.researcher.affiliationDate, profile.affiliation_date],
+    [labels.researcher.teachingHours, profile.teaching_hours?.toString() || "0"],
+    [labels.researcher.researchHours, profile.research_hours?.toString() || "0"],
+    [labels.researcher.otherHours, profile.other_hours?.toString() || "0"],
   ];
   return (
     <dl className="grid gap-3 sm:grid-cols-2">

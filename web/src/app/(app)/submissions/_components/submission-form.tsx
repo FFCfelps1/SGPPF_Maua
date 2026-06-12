@@ -1,18 +1,18 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { EntityForm } from "@/lib/crud/entity-form";
 import { Field } from "@/lib/crud/field";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { FileUpload } from "@/components/ui/file-upload";
 import { labels } from "@/lib/labels";
 import { searchResearchers } from "../_actions";
 import { RiUserAddLine, RiDeleteBinLine, RiSearchLine } from "@remixicon/react";
 import type { ActionState } from "@/lib/crud/action";
 import type { Database } from "@/lib/database.types";
+import { MemberHoursChart } from "./member-hours-chart";
 
 type Submission = Database["public"]["Tables"]["project_submissions"]["Row"];
 type Action = (state: ActionState, formData: FormData) => Promise<ActionState>;
@@ -34,8 +34,6 @@ export function SubmissionForm({
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<{ id: string; full_name: string; email: string }[]>([]);
   const [documentUrl, setDocumentUrl] = useState(d.document_url ?? "");
-  const [pending, startTransition] = useTransition();
-
   const isNew = !d.id;
 
   async function handleSearch() {
@@ -214,6 +212,8 @@ export function SubmissionForm({
                   ))}
                 </div>
               )}
+
+              <MemberHoursChart members={selectedMembers} />
             </div>
           )}
         </>

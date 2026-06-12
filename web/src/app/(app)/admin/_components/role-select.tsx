@@ -6,7 +6,14 @@ import { labels } from "@/lib/labels";
 import type { Database } from "@/lib/database.types";
 
 type AppRole = Database["public"]["Enums"]["app_role"];
-const ROLES: AppRole[] = ["admin", "researcher", "consultant"];
+const ROLES: AppRole[] = [
+  "admin",
+  "researcher",
+  "consultant",
+  "dept_manager",
+  "cp_manager",
+  "maua_manager",
+];
 
 const selectClass =
   "h-9 rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs outline-none focus-visible:ring-2";

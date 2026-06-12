@@ -86,7 +86,6 @@ export function DashboardCharts({ k }: { k: DashboardKpis }) {
 
   const chartData = selectedMetric === "submissions" ? submissionsData : deptData;
   const chartConfig = selectedMetric === "submissions" ? subConfig : deptConfig;
-  const isSubmission = selectedMetric === "submissions";
 
   return (
     <div className="space-y-6">
@@ -220,7 +219,7 @@ export function DashboardCharts({ k }: { k: DashboardKpis }) {
                 />
                 <ChartTooltip content={<ChartTooltipContent hideLabel />} />
                 <Bar dataKey="value" radius={[0, 4, 4, 0]} barSize={32}>
-                  {chartData.map((entry: any, index: number) => (
+                  {chartData.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.fill} />
                   ))}
                 </Bar>

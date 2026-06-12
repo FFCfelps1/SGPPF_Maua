@@ -2,13 +2,13 @@
 
 -- Researchers (profiles) extensions.
 alter table profiles
-  add column department        text,
-  add column unit              text,
-  add column research_gate_id  text;
+  add column if not exists department        text,
+  add column if not exists unit              text,
+  add column if not exists research_gate_id  text;
 
 -- Projects extensions: Team members (Equipe envolvida) and description.
 alter table projects
-  add column description text;
+  add column if not exists description text;
 
 create table project_members (
   id          bigint generated always as identity primary key,

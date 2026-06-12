@@ -598,6 +598,29 @@ export type Database = {
           total_publications: number
         }[]
       }
+      get_dashboard_stats_filtered: {
+        Args: {
+          p_department?: string
+          p_end_year?: number
+          p_max_money?: number
+          p_min_money?: number
+          p_researcher?: string
+          p_start_year?: number
+        }
+        Returns: {
+          active_funded_projects: number
+          advisings_by_dept: Json
+          completed_advisings: number
+          funds_received: number
+          projects_by_dept: Json
+          publications_by_dept: Json
+          recent_publications: number
+          researchers_by_dept: Json
+          submissions_by_status: Json
+          total_advisings: number
+          total_publications: number
+        }[]
+      }
       my_permissions: {
         Args: never
         Returns: Database["public"]["Enums"]["app_permission"][]

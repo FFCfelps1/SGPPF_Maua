@@ -134,7 +134,7 @@ export default async function GroupsPage({
     .order("full_name");
 
   // Fetch stats for this department
-  const k = await getDashboardKpis(department.name);
+  const k = await getDashboardKpis({ department: department.name });
 
   const canManage = can(perms, "groups:manage");
 

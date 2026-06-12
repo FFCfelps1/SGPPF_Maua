@@ -81,4 +81,33 @@ describe("RLS — negative authorization (the legacy app enforced none)", () => 
 
     await admin.from("profiles").update({ role: "researcher" }).eq("id", RESEARCHER);
   });
+
+  test("dashboard filters combine researcher, period, and money ranges", async () => {
+    if (!up) return;
+    const admin = await signedIn("admin@maua.br");
+
+    const matching = await admin
+      .rpc("get_dashboard_stats_filtered", {
+        p_researcher: RESEARCHER,
+        p_start_year: 2025,
+        p_end_year: 2025,
+        p_min_money: 40000,
+        p_max_money: 40000,
+      })
+      .single();
+
+    expect(matching.error).toBeNull();
+    expect(matching.data?.total_publications).toBe(1);
+    expect(matching.data?.total_advisings).toBe(1);
+    expect(matching.data?.active_funded_projects).toBe(1);
+    expect(matching.data?.funds_received).toBe(40000);
+
+    const outsideMoneyRange = await admin
+      .rpc("get_dashboard_stats_filtered", { p_min_money: 40001 })
+      .single();
+
+    expect(outsideMoneyRange.error).toBeNull();
+    expect(outsideMoneyRange.data?.active_funded_projects).toBe(0);
+    expect(outsideMoneyRange.data?.funds_received).toBe(0);
+  });
 });

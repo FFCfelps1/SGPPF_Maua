@@ -11,6 +11,7 @@ export type CrossrefMapped = {
   venue: string | null;
   issn: string | null;
   authors_text: string | null;
+  citation_count: number | null;
 };
 
 export type DoiResult =
@@ -74,5 +75,6 @@ export async function fetchCrossref(doi: string): Promise<CrossrefMapped | null>
     venue: firstOf(m["container-title"]),
     issn: firstOf(m.ISSN),
     authors_text: authorsText || null,
+    citation_count: typeof m["is-referenced-by-count"] === "number" ? m["is-referenced-by-count"] : null,
   };
 }

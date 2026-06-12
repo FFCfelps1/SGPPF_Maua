@@ -11,7 +11,15 @@ import {
 } from "lucide-react";
 import { DashboardCharts } from "./_components/dashboard-charts";
 import { DashboardFilters } from "./_components/dashboard-filters";
-import { getDashboardKpis, getDepartments } from "@/lib/data/kpis";
+import {
+  getDashboardKpis,
+  getDepartments,
+  getResearchers,
+} from "@/lib/data/kpis";
+import {
+  parseDashboardFilters,
+  type DashboardFilterParams,
+} from "@/lib/data/dashboard-filters";
 import { KpiCard } from "./_components/kpi-card";
 import { labels } from "@/lib/labels";
 import { getMyPermissions } from "@/lib/permissions";
@@ -26,12 +34,15 @@ export const dynamic = "force-dynamic";
 export default async function DashboardPage({
   searchParams,
 }: {
-  searchParams: Promise<{ department?: string }>;
+  searchParams: Promise<DashboardFilterParams>;
 }) {
-  const { department } = await searchParams;
-  const k = await getDashboardKpis(department);
-  const departments = await getDepartments();
-  const permissions = await getMyPermissions();
+  const filters = parseDashboardFilters(await searchParams);
+  const [k, departments, researchers, permissions] = await Promise.all([
+    getDashboardKpis(filters),
+    getDepartments(),
+    getResearchers(),
+    getMyPermissions(),
+  ]);
 
   const recentShare = percentage(k.recent_publications, k.total_publications);
   const completedShare = percentage(k.completed_advisings, k.total_advisings);
@@ -86,13 +97,16 @@ export default async function DashboardPage({
       </section>
 
       <section className="space-y-4">
-        <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
-          <SectionHeading
-            title={labels.dashboard.overview}
-            description={labels.dashboard.overviewDescription}
-          />
-          <DashboardFilters departments={departments} />
-        </div>
+        <SectionHeading
+          title={labels.dashboard.overview}
+          description={labels.dashboard.overviewDescription}
+        />
+        <DashboardFilters
+          key={JSON.stringify(filters)}
+          departments={departments}
+          researchers={researchers}
+          filters={filters}
+        />
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
           <KpiCard
             label={labels.dashboard.publicationsTotal}

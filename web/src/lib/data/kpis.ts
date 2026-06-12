@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import type { DashboardFilters } from "./dashboard-filters";
 
 export type DepartmentMetric = {
   label: string;
@@ -19,7 +20,12 @@ export type DashboardKpis = {
   submissions_by_status: { label: string; value: number }[];
 };
 
-function departmentMetrics(value: unknown): DepartmentMetric[] {
+export type ResearcherOption = {
+  id: string;
+  full_name: string;
+};
+
+function metrics(value: unknown): DepartmentMetric[] {
   if (!Array.isArray(value)) return [];
 
   return value.flatMap((entry) => {
@@ -39,10 +45,17 @@ function departmentMetrics(value: unknown): DepartmentMetric[] {
 }
 
 /** Reads the RLS-respecting dashboard stats via RPC. Zero-safe (honest empty state). */
-export async function getDashboardKpis(department?: string): Promise<DashboardKpis> {
+export async function getDashboardKpis(
+  filters: DashboardFilters = {},
+): Promise<DashboardKpis> {
   const supabase = await createClient();
-  const { data, error } = await supabase.rpc("get_dashboard_stats", {
-    p_department: department || undefined,
+  const { data, error } = await supabase.rpc("get_dashboard_stats_filtered", {
+    p_department: filters.department,
+    p_researcher: filters.researcher,
+    p_start_year: filters.startYear,
+    p_end_year: filters.endYear,
+    p_min_money: filters.minMoney,
+    p_max_money: filters.maxMoney,
   });
   
   if (error) {
@@ -62,22 +75,7 @@ export async function getDashboardKpis(department?: string): Promise<DashboardKp
     };
   }
 
-  // Fetch submissions stats separately as it's not yet in the main RPC
-  const { data: subData } = await supabase
-    .from("project_submissions")
-    .select("status");
-  
-  const subStats = (subData ?? []).reduce((acc, curr) => {
-    acc[curr.status] = (acc[curr.status] || 0) + 1;
-    return acc;
-  }, {} as Record<string, number>);
-
-  const submissions_by_status = Object.entries(subStats).map(([label, value]) => ({
-    label,
-    value
-  }));
-
-  const stats = data[0] || {};
+  const stats = data[0] ?? {};
   return {
     total_publications: Number(stats.total_publications ?? 0),
     recent_publications: Number(stats.recent_publications ?? 0),
@@ -85,11 +83,11 @@ export async function getDashboardKpis(department?: string): Promise<DashboardKp
     completed_advisings: Number(stats.completed_advisings ?? 0),
     active_funded_projects: Number(stats.active_funded_projects ?? 0),
     funds_received: Number(stats.funds_received ?? 0),
-    projects_by_dept: departmentMetrics(stats.projects_by_dept),
-    researchers_by_dept: departmentMetrics(stats.researchers_by_dept),
-    publications_by_dept: departmentMetrics(stats.publications_by_dept),
-    advisings_by_dept: departmentMetrics(stats.advisings_by_dept),
-    submissions_by_status,
+    projects_by_dept: metrics(stats.projects_by_dept),
+    researchers_by_dept: metrics(stats.researchers_by_dept),
+    publications_by_dept: metrics(stats.publications_by_dept),
+    advisings_by_dept: metrics(stats.advisings_by_dept),
+    submissions_by_status: metrics(stats.submissions_by_status),
   };
 }
 
@@ -108,6 +106,24 @@ export async function getDepartments(): Promise<string[]> {
     .not("department", "is", null);
   
   (projData ?? []).forEach((d) => depts.add(d.department!));
+
+  const { data: submissionData } = await supabase
+    .from("project_submissions")
+    .select("department")
+    .not("department", "is", null);
+
+  (submissionData ?? []).forEach((d) => depts.add(d.department!));
   
   return Array.from(depts).sort();
+}
+
+export async function getResearchers(): Promise<ResearcherOption[]> {
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("profiles")
+    .select("id, full_name")
+    .eq("is_active", true)
+    .order("full_name");
+
+  return data ?? [];
 }

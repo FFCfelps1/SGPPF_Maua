@@ -131,7 +131,7 @@ export default async function ProjectDetailPage({
 
       <div className="grid gap-6 lg:grid-cols-2">
         <FundingTab projectId={project.id} funding={funding} canManage={canEdit} />
-        <ProjectMembersEditor projectId={project.id} members={members} canManage={canEdit} />
+        <ProjectMembersEditor projectId={project.id} members={members} canWrite={canEdit} />
       </div>
     </div>
   );

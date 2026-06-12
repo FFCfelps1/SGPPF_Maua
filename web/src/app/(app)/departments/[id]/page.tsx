@@ -35,7 +35,7 @@ export default async function DepartmentDetailPage({
   const { data: department } = await supabase
     .from("departments")
     .select("*")
-    .eq("id", id)
+    .eq("id", Number(id))
     .single();
 
   if (!department) notFound();
@@ -44,12 +44,12 @@ export default async function DepartmentDetailPage({
   const { data: members } = await supabase
     .from("profiles")
     .select("id, full_name, email")
-    .eq("department_id", id)
+    .eq("department_id", Number(id))
     .eq("is_active", true)
     .order("full_name");
 
   // Fetch stats for this department
-  const k = await getDashboardKpis(department.name);
+  const k = await getDashboardKpis({ department: department.name });
 
   const canManage = can(perms, "departments:manage");
 

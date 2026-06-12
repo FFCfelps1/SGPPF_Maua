@@ -7,8 +7,8 @@ import { createClient } from "@/lib/supabase/server";
 
 export const createDepartment = action(
   departmentSchema,
-  async (input, { supabase }) => {
-    const { error } = await supabase.from("departments").insert(input);
+  async ({ id, ...fields }, { supabase }) => {
+    const { error } = await supabase.from("departments").insert(fields);
     if (error) throw error;
   },
   { revalidate: "/departments" },
@@ -17,6 +17,7 @@ export const createDepartment = action(
 export const updateDepartment = action(
   departmentSchema,
   async ({ id, ...fields }, { supabase }) => {
+    if (!id) throw new Error("ID is required for update");
     const { error } = await supabase
       .from("departments")
       .update(fields)

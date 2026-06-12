@@ -56,7 +56,7 @@ export async function getDashboardKpis(
     p_end_year: filters.endYear ?? null,
     p_min_money: filters.minMoney ?? null,
     p_max_money: filters.maxMoney ?? null,
-  });
+  } as any);
   
   if (error) {
     console.error("Error fetching dashboard stats:", JSON.stringify(error, null, 2));

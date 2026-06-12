@@ -10,9 +10,9 @@ export async function createSubmission(state: ActionState, formData: FormData): 
   const supabase = await createClient();
   const rawData = Object.fromEntries(formData.entries());
   
-  // Extract members if present (comma separated string from hidden input)
-  const memberIdsRaw = formData.get("_member_ids") as string;
-  const memberIds = memberIdsRaw ? memberIdsRaw.split(",").filter(Boolean) : [];
+  // Extract members if present (JSON string from hidden input)
+  const membersJson = formData.get("_members_json") as string;
+  const selectedMembers = membersJson ? JSON.parse(membersJson) : [];
 
   const validated = submissionCreateSchema.safeParse(rawData);
   if (!validated.success) {
@@ -36,11 +36,12 @@ export async function createSubmission(state: ActionState, formData: FormData): 
   if (error) return { ok: false, errors: { _form: [error.message] } };
 
   // 2. Add members if any
-  if (memberIds.length > 0) {
-    const memberInserts = memberIds.map(pid => ({
+  if (selectedMembers.length > 0) {
+    const memberInserts = selectedMembers.map((m: any) => ({
       submission_id: submission.id,
-      profile_id: pid,
-      role: "Pesquisador"
+      profile_id: m.id,
+      role: "Pesquisador",
+      dedication_hours: m.hours || 0
     }));
     const { error: memberError } = await supabase.from("submission_members").insert(memberInserts);
     if (memberError) console.error("Error adding members during creation:", memberError);
@@ -173,11 +174,16 @@ export async function updateAgencyStatus(id: number, status: AgencyProjectStatus
   revalidatePath(`/submissions/${id}`);
 }
 
-export async function addMember(submissionId: number, profileId: string, role?: string) {
+export async function addMember(submissionId: number, profileId: string, role?: string, dedicationHours: number = 0) {
   const supabase = await createClient();
   const { error } = await supabase
     .from("submission_members")
-    .insert({ submission_id: submissionId, profile_id: profileId, role });
+    .insert({ 
+      submission_id: submissionId, 
+      profile_id: profileId, 
+      role,
+      dedication_hours: dedicationHours
+    });
 
   if (error) throw new Error(error.message);
   revalidatePath(`/submissions/${submissionId}`);
@@ -188,6 +194,18 @@ export async function removeMember(submissionId: number, profileId: string) {
   const { error } = await supabase
     .from("submission_members")
     .delete()
+    .eq("submission_id", submissionId)
+    .eq("profile_id", profileId);
+
+  if (error) throw new Error(error.message);
+  revalidatePath(`/submissions/${submissionId}`);
+}
+
+export async function updateSubmissionMemberHours(submissionId: number, profileId: string, dedicationHours: number) {
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("submission_members")
+    .update({ dedication_hours: dedicationHours })
     .eq("submission_id", submissionId)
     .eq("profile_id", profileId);
 

@@ -6,6 +6,11 @@ import { exportEntityCsv } from "../_actions/export";
 import type { ListSearchParams } from "@/lib/crud/pagination";
 import { labels } from "@/lib/labels";
 import type { Database } from "@/lib/database.types";
+import { getMyPermissions, can } from "@/lib/permissions";
+import { buttonVariants } from "@/components/ui/button";
+import Link from "next/link";
+import { RiUserAddLine } from "@remixicon/react";
+import { cn } from "@/lib/utils";
 
 type Profile = Database["public"]["Tables"]["profiles"]["Row"];
 
@@ -15,6 +20,9 @@ export default async function ResearchersPage({
   searchParams: Promise<ListSearchParams>;
 }) {
   const sp = await searchParams;
+  const perms = await getMyPermissions();
+  const canCreate = can(perms, "researchers:create");
+
   const { rows, count, page, perPage } = await listEntities<Profile>(
     sp,
     {
@@ -41,10 +49,21 @@ export default async function ResearchersPage({
       </h1>
       <div className="flex items-center justify-between gap-4">
         <SearchBar defaultValue={sp.q} />
-        <ExportButton
-          action={exportEntityCsv.bind(null, "researchers", sp)}
-          filename="pesquisadores.csv"
-        />
+        <div className="flex items-center gap-2">
+          {canCreate && (
+            <Link
+              href="/researchers/new"
+              className={cn(buttonVariants({ variant: "default", size: "sm" }))}
+            >
+              <RiUserAddLine className="mr-2 size-4" />
+              {labels.actions.create}
+            </Link>
+          )}
+          <ExportButton
+            action={exportEntityCsv.bind(null, "researchers", sp)}
+            filename="pesquisadores.csv"
+          />
+        </div>
       </div>
       <DataTable
         basePath="/researchers"

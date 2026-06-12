@@ -13,10 +13,11 @@ export const labels = {
     projects: "Projetos",
     publications: "Publicações",
     advisings: "Orientações",
+    groups: "Grupos",
     admin: "Administração",
     signOut: "Sair",
-  },
-  shell: {
+    },
+    shell: {
     institution: "Instituto Mauá de Tecnologia",
     management: "Gestão acadêmica",
     account: "Conta institucional",
@@ -27,6 +28,7 @@ export const labels = {
     descriptions: {
       dashboard: "Visão geral",
       researchers: "Perfis acadêmicos",
+      groups: "Gestão de departamentos",
       projects: "Pesquisa e fomento",
       publications: "Produção científica",
       advisings: "Formação acadêmica",

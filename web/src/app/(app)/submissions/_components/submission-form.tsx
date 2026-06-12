@@ -29,7 +29,7 @@ export function SubmissionForm({
   const d = defaults ?? {};
   
   // Local state for members during creation (only for 'new' mode)
-  const [selectedMembers, setSelectedMembers] = useState<{id: string, name: string}[]>([]);
+  const [selectedMembers, setSelectedMembers] = useState<{id: string, name: string, hours: number}[]>([]);
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<{ id: string; full_name: string; email: string }[]>([]);
   const [pending, startTransition] = useTransition();
@@ -51,15 +51,16 @@ export function SubmissionForm({
         <>
           {d.id ? <input type="hidden" name="id" value={d.id} /> : null}
           
-          {/* Hidden input to pass member IDs to the action */}
+          {/* Hidden input to pass member data (ID + Hours) to the action */}
           {isNew && (
             <input 
               type="hidden" 
-              name="_member_ids" 
-              value={selectedMembers.map(m => m.id).join(",")} 
+              name="_members_json" 
+              value={JSON.stringify(selectedMembers)} 
             />
           )}
 
+          {/* ... existing fields (title, abstract, etc.) ... */}
           <Field name="title" label={labels.submission.projectTitle} required error={state.errors?.title}>
             <Input id="title" name="title" defaultValue={d.title ?? ""} required />
           </Field>
@@ -130,7 +131,7 @@ export function SubmissionForm({
               
               <div className="flex gap-2">
                 <Input
-                  placeholder="Buscar pesquisadores para adicionar..."
+                  placeholder="Buscar pesquisadores..."
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), handleSearch())}
@@ -153,7 +154,7 @@ export function SubmissionForm({
                           variant="ghost"
                           disabled={isSelected}
                           onClick={() => {
-                            setSelectedMembers([...selectedMembers, { id: r.id, name: r.full_name }]);
+                            setSelectedMembers([...selectedMembers, { id: r.id, name: r.full_name, hours: 0 }]);
                             setResults([]);
                             setQuery("");
                           }}
@@ -167,20 +168,37 @@ export function SubmissionForm({
               )}
 
               {selectedMembers.length > 0 && (
-                <div className="flex flex-wrap gap-2">
+                <div className="space-y-2">
                   {selectedMembers.map((m) => (
-                    <Badge key={m.id} variant="secondary" className="pl-3 pr-1 py-1 gap-1">
-                      {m.name}
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="icon-xs"
-                        className="h-4 w-4 p-0 hover:bg-transparent"
-                        onClick={() => setSelectedMembers(selectedMembers.filter(sm => sm.id !== m.id))}
-                      >
-                        <RiDeleteBinLine className="size-3" />
-                      </Button>
-                    </Badge>
+                    <div key={m.id} className="flex items-center justify-between rounded-lg border p-3 text-sm">
+                      <div className="flex-1">
+                        <p className="font-medium">{m.name}</p>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-2">
+                          <label className="text-xs text-muted-foreground shrink-0">Horas:</label>
+                          <Input
+                            type="number"
+                            min={0}
+                            className="h-8 w-16 px-2 text-xs"
+                            value={m.hours}
+                            onChange={(e) => {
+                              const hours = parseInt(e.target.value) || 0;
+                              setSelectedMembers(selectedMembers.map(sm => sm.id === m.id ? { ...sm, hours } : sm));
+                            }}
+                          />
+                        </div>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon-sm"
+                          className="text-destructive hover:bg-destructive/10"
+                          onClick={() => setSelectedMembers(selectedMembers.filter(sm => sm.id !== m.id))}
+                        >
+                          <RiDeleteBinLine className="size-4" />
+                        </Button>
+                      </div>
+                    </div>
                   ))}
                 </div>
               )}

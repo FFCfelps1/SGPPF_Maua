@@ -28,3 +28,26 @@ export const researcherUpdateSchema = z.object({
 });
 
 export type ResearcherUpdate = z.infer<typeof researcherUpdateSchema>;
+
+export const researcherCreateSchema = z.object({
+  full_name: z.string().trim().min(2, labels.errors.required),
+  email: z
+    .string()
+    .email(labels.errors.invalidEmail)
+    .regex(/@maua\.br$/i, labels.errors.notMauaEmail),
+  department: optionalText,
+  unit: optionalText,
+  position: optionalText,
+  area_of_expertise: optionalText,
+  orcid: optionalText,
+  lattes_url: optionalText,
+  google_scholar_id: optionalText,
+  research_gate_id: optionalText,
+  employment_type: optionalText,
+  affiliation_date: optionalText,
+  teaching_hours: z.coerce.number().int().nonnegative().default(0),
+  research_hours: z.coerce.number().int().nonnegative().default(0),
+  other_hours: z.coerce.number().int().nonnegative().default(0),
+});
+
+export type ResearcherCreate = z.infer<typeof researcherCreateSchema>;

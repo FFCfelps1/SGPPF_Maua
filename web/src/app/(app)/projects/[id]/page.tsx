@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { getMyPermissions } from "@/lib/permissions";
 import { ProjectForm } from "../_components/project-form";
 import { FundingTab } from "../_components/funding-tab";
+import { ProjectMembersEditor } from "../_components/project-members-editor";
 import { deleteProject, updateProject } from "../_actions";
 import { ConfirmDialog } from "@/lib/crud/confirm-dialog";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -26,7 +27,7 @@ export default async function ProjectDetailPage({
 
   const { data: project } = await supabase
     .from("projects")
-    .select("*, funding(*)")
+    .select("*, funding(*), project_members(*, profiles(full_name, email))")
     .eq("id", Number(id))
     .single();
   if (!project) notFound();
@@ -38,6 +39,7 @@ export default async function ProjectDetailPage({
   const canEdit = perms.has("projects:write") && canManage;
   const canDelete = perms.has("projects:delete") && canManage;
   const funding = (project.funding ?? []) as Funding[];
+  const members = (project.project_members ?? []) as any[];
 
   return (
     <div className="space-y-6">
@@ -94,18 +96,33 @@ export default async function ProjectDetailPage({
         </p>
       ) : null}
 
-      <Card>
-        <CardHeader>
-          <CardTitle>{labels.project.funding}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <FundingTab
-            projectId={project.id}
-            funding={funding}
-            canManage={perms.has("funding:write") && canManage}
-          />
-        </CardContent>
-      </Card>
+      <div className="grid gap-6 lg:grid-cols-2">
+        <Card>
+          <CardHeader>
+            <CardTitle>{labels.project.members}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ProjectMembersEditor
+              projectId={project.id}
+              members={members}
+              canWrite={canEdit}
+            />
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>{labels.project.funding}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <FundingTab
+              projectId={project.id}
+              funding={funding}
+              canManage={perms.has("funding:write") && canManage}
+            />
+          </CardContent>
+        </Card>
+      </div>
 
       {canEdit ? (
         <Card>

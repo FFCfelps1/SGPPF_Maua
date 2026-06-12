@@ -12,6 +12,7 @@ import {
   FolderKanban,
   GraduationCap,
   LayoutDashboard,
+  LayoutGrid,
   LogOut,
   Menu,
   Settings,
@@ -38,6 +39,13 @@ const ITEMS = [
     description: labels.shell.descriptions.researchers,
     permission: "researchers:read",
     icon: Users,
+  },
+  {
+    href: "/groups",
+    label: labels.nav.groups,
+    description: labels.shell.descriptions.groups,
+    permission: "groups:read",
+    icon: LayoutGrid,
   },
   {
     href: "/projects",

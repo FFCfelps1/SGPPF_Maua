@@ -228,6 +228,7 @@ export type Database = {
       project_members: {
         Row: {
           created_at: string
+          dedication_hours: number
           id: number
           profile_id: string
           project_id: number
@@ -235,6 +236,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          dedication_hours?: number
           id?: never
           profile_id: string
           project_id: number
@@ -242,6 +244,7 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          dedication_hours?: number
           id?: never
           profile_id?: string
           project_id?: number
@@ -514,6 +517,7 @@ export type Database = {
       submission_members: {
         Row: {
           created_at: string
+          dedication_hours: number
           id: number
           profile_id: string
           role: string | null
@@ -521,6 +525,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          dedication_hours?: number
           id?: never
           profile_id: string
           role?: string | null
@@ -528,6 +533,7 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          dedication_hours?: number
           id?: never
           profile_id?: string
           role?: string | null
@@ -594,6 +600,9 @@ export type Database = {
         | "researchers:read"
         | "researchers:write"
         | "researchers:delete"
+        | "researchers:create"
+        | "groups:read"
+        | "groups:manage"
         | "projects:read"
         | "projects:write"
         | "projects:delete"
@@ -777,6 +786,9 @@ export const Constants = {
         "researchers:read",
         "researchers:write",
         "researchers:delete",
+        "researchers:create",
+        "groups:read",
+        "groups:manage",
         "projects:read",
         "projects:write",
         "projects:delete",

@@ -4,7 +4,8 @@ import { useState, useTransition } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { addMember, removeMember, searchResearchers, updateSubmissionMemberHours } from "../_actions";
+import { searchResearchers } from "@/app/(app)/submissions/_actions";
+import { addProjectMember, removeProjectMember, updateProjectMemberHours } from "../_actions";
 import { labels } from "@/lib/labels";
 import { RiUserAddLine, RiDeleteBinLine, RiSearchLine, RiCheckLine } from "@remixicon/react";
 
@@ -15,12 +16,12 @@ type Member = {
   profiles: { full_name: string; email: string } | null;
 };
 
-export function SubmissionMembersEditor({
-  submissionId,
+export function ProjectMembersEditor({
+  projectId,
   members,
   canWrite,
 }: {
-  submissionId: number;
+  projectId: number;
   members: Member[];
   canWrite: boolean;
 }) {
@@ -31,18 +32,12 @@ export function SubmissionMembersEditor({
   // For inline editing
   const [editingHours, setEditingHours] = useState<Record<string, number>>({});
 
-  async function handleSearch() {
-    if (query.length < 2) return;
-    const data = await searchResearchers(query);
-    setResults(data || []);
-  }
-
   function saveHours(profileId: string, value: number) {
     const original = members.find((m) => m.profile_id === profileId)?.dedication_hours ?? 0;
     if (value === original) return;
     startTransition(async () => {
       try {
-        await updateSubmissionMemberHours(submissionId, profileId, value);
+        await updateProjectMemberHours(projectId, profileId, value);
         setEditingHours((prev) => {
           const next = { ...prev };
           delete next[profileId];
@@ -54,10 +49,16 @@ export function SubmissionMembersEditor({
     });
   }
 
+  async function handleSearch() {
+    if (query.length < 2) return;
+    const data = await searchResearchers(query);
+    setResults(data || []);
+  }
+
   return (
     <div className="space-y-4">
       <div className="space-y-2">
-        <h3 className="text-sm font-medium">{labels.submission.members}</h3>
+        <h3 className="text-sm font-medium">{labels.project.members}</h3>
         {members.length === 0 ? (
           <p className="text-sm text-muted-foreground italic">Nenhum membro vinculado ainda.</p>
         ) : (
@@ -113,7 +114,7 @@ export function SubmissionMembersEditor({
                       variant="ghost"
                       size="icon-sm"
                       disabled={pending}
-                      onClick={() => startTransition(() => removeMember(submissionId, m.profile_id))}
+                      onClick={() => startTransition(() => removeProjectMember(projectId, m.profile_id))}
                     >
                       <RiDeleteBinLine className="size-4" />
                     </Button>
@@ -152,7 +153,7 @@ export function SubmissionMembersEditor({
                       disabled={isMember || pending}
                       onClick={() => {
                         startTransition(async () => {
-                          await (addMember as any)(submissionId, r.id, "Pesquisador", 0);
+                          await addProjectMember(projectId, r.id, "Pesquisador", 0);
                           setResults([]);
                           setQuery("");
                         });

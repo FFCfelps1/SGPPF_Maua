@@ -1,11 +1,16 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { EntityForm } from "@/lib/crud/entity-form";
 import { Field } from "@/lib/crud/field";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { labels } from "@/lib/labels";
 import { PROJECT_STATUS } from "@/lib/schemas/project";
+import { searchResearchers } from "@/app/(app)/submissions/_actions";
+import { RiUserAddLine, RiDeleteBinLine, RiSearchLine } from "@remixicon/react";
 import type { ActionState } from "@/lib/crud/action";
 import type { Database } from "@/lib/database.types";
 
@@ -26,6 +31,20 @@ export function ProjectForm({
 }) {
   const router = useRouter();
   const d = defaults ?? {};
+  
+  // Local state for members during creation (only for 'new' mode)
+  const [selectedMembers, setSelectedMembers] = useState<{id: string, name: string, hours: number}[]>([]);
+  const [query, setQuery] = useState("");
+  const [results, setResults] = useState<{ id: string; full_name: string; email: string }[]>([]);
+
+  const isNew = !d.id;
+
+  async function handleSearch() {
+    if (query.length < 2) return;
+    const data = await searchResearchers(query);
+    setResults(data || []);
+  }
+
   const onSuccess = () =>
     afterSuccess === "refresh" ? router.refresh() : router.push(afterSuccess);
 
@@ -34,6 +53,16 @@ export function ProjectForm({
       {(state) => (
         <>
           {d.id ? <input type="hidden" name="id" value={d.id} /> : null}
+          
+          {/* Hidden input to pass member data (ID + Hours) to the action */}
+          {isNew && (
+            <input 
+              type="hidden" 
+              name="_members_json" 
+              value={JSON.stringify(selectedMembers)} 
+            />
+          )}
+
           <Field name="title" label={labels.project.title} required error={state.errors?.title}>
             <Input id="title" name="title" defaultValue={d.title ?? ""} required />
           </Field>
@@ -72,6 +101,86 @@ export function ProjectForm({
               <Input id="end_date" name="end_date" type="date" defaultValue={d.end_date ?? ""} />
             </Field>
           </div>
+
+          {isNew && (
+            <div className="space-y-4 pt-4 border-t mt-4">
+              <h3 className="text-sm font-medium">{labels.project.members}</h3>
+              
+              <div className="flex gap-2">
+                <Input
+                  placeholder="Buscar pesquisadores..."
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), handleSearch())}
+                />
+                <Button type="button" variant="outline" onClick={handleSearch}>
+                  <RiSearchLine className="size-4" />
+                </Button>
+              </div>
+
+              {results.length > 0 && (
+                <ul className="rounded-md border bg-muted/30 overflow-hidden">
+                  {results.map((r) => {
+                    const isSelected = selectedMembers.some((m) => m.id === r.id);
+                    return (
+                      <li key={r.id} className="flex items-center justify-between p-2 text-sm hover:bg-muted">
+                        <span>{r.full_name} ({r.email})</span>
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="ghost"
+                          disabled={isSelected}
+                          onClick={() => {
+                            setSelectedMembers([...selectedMembers, { id: r.id, name: r.full_name, hours: 0 }]);
+                            setResults([]);
+                            setQuery("");
+                          }}
+                        >
+                          {isSelected ? "Selecionado" : <RiUserAddLine className="size-4" />}
+                        </Button>
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
+
+              {selectedMembers.length > 0 && (
+                <div className="space-y-2">
+                  {selectedMembers.map((m) => (
+                    <div key={m.id} className="flex items-center justify-between rounded-lg border p-3 text-sm">
+                      <div className="flex-1">
+                        <p className="font-medium">{m.name}</p>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-2">
+                          <label className="text-xs text-muted-foreground shrink-0">Horas:</label>
+                          <Input
+                            type="number"
+                            min={0}
+                            className="h-8 w-16 px-2 text-xs"
+                            value={m.hours}
+                            onChange={(e) => {
+                              const hours = parseInt(e.target.value) || 0;
+                              setSelectedMembers(selectedMembers.map(sm => sm.id === m.id ? { ...sm, hours } : sm));
+                            }}
+                          />
+                        </div>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon-sm"
+                          className="text-destructive hover:bg-destructive/10"
+                          onClick={() => setSelectedMembers(selectedMembers.filter(sm => sm.id !== m.id))}
+                        >
+                          <RiDeleteBinLine className="size-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
         </>
       )}
     </EntityForm>

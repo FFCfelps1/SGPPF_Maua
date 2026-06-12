@@ -8,12 +8,31 @@ import { createClient } from "@/lib/supabase/server";
 
 export const createProject = action(
   projectCreateSchema,
-  async (input, { supabase, userId }) => {
-    // The creator is the lead (RLS requires lead_id = auth.uid() on insert).
-    const { error } = await supabase
+  async (input, { supabase, userId, formData }) => {
+    // 1. Extract members if present (JSON string from hidden input)
+    const membersJson = formData.get("_members_json") as string;
+    const selectedMembers = membersJson ? JSON.parse(membersJson) : [];
+
+    // 2. Create project. The creator is the lead.
+    const { data: project, error } = await supabase
       .from("projects")
-      .insert({ ...input, lead_id: userId });
+      .insert({ ...input, lead_id: userId })
+      .select()
+      .single();
+    
     if (error) throw error;
+
+    // 3. Add members if any
+    if (selectedMembers.length > 0) {
+      const memberInserts = selectedMembers.map((m: any) => ({
+        project_id: project.id,
+        profile_id: m.id,
+        role: "Pesquisador",
+        dedication_hours: m.hours || 0
+      }));
+      const { error: memberError } = await supabase.from("project_members").insert(memberInserts);
+      if (memberError) console.error("Error adding members during creation:", memberError);
+    }
   },
   { revalidate: "/projects" },
 );
@@ -50,5 +69,44 @@ export async function deleteFunding(
   const supabase = await createClient();
   const { error } = await supabase.from("funding").delete().eq("id", id);
   if (error) throw error;
+  revalidatePath(`/projects/${projectId}`);
+}
+
+export async function addProjectMember(projectId: number, profileId: string, role?: string, dedicationHours: number = 0) {
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("project_members")
+    .insert({ 
+      project_id: projectId, 
+      profile_id: profileId, 
+      role,
+      dedication_hours: dedicationHours
+    });
+
+  if (error) throw new Error(error.message);
+  revalidatePath(`/projects/${projectId}`);
+}
+
+export async function removeProjectMember(projectId: number, profileId: string) {
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("project_members")
+    .delete()
+    .eq("project_id", projectId)
+    .eq("profile_id", profileId);
+
+  if (error) throw new Error(error.message);
+  revalidatePath(`/projects/${projectId}`);
+}
+
+export async function updateProjectMemberHours(projectId: number, profileId: string, dedicationHours: number) {
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("project_members")
+    .update({ dedication_hours: dedicationHours })
+    .eq("project_id", projectId)
+    .eq("profile_id", profileId);
+
+  if (error) throw new Error(error.message);
   revalidatePath(`/projects/${projectId}`);
 }

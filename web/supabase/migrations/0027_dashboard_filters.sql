@@ -1,5 +1,7 @@
 -- Combined dashboard filters. The function remains security invoker so every
 -- aggregate respects the caller's row-level security policies.
+drop function if exists public.get_dashboard_stats_filtered(text, uuid, integer, integer, numeric, numeric);
+
 create or replace function get_dashboard_stats_filtered(
   p_department text default null,
   p_researcher uuid default null,
